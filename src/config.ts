@@ -16,8 +16,8 @@ export const siteConfig: SiteConfig = {
 		fixed: false,
 	},
 	banner: {
-		enable: false,
-		src: "assets/images/demo-banner.png",
+		enable: true,
+		src: "assets/images/banner.jpg",
 		position: "center",
 		credit: {
 			enable: false,
@@ -46,7 +46,7 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "assets/images/demo-avatar.png",
+	avatar: "assets/images/avatar.png",
 	name: "SolskjaerSYSU",
 	bio: "一个持续整理 C++、数据结构和编程学习笔记的个人博客。",
 	links: [
