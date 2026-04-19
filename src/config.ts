@@ -9,7 +9,7 @@ import { LinkPreset } from "./types/config";
 
 export const siteConfig: SiteConfig = {
 	title: "SolskjaerSYSU",
-	subtitle: "记录编程、学习与思考",
+	subtitle: "记录 C++、数据结构与日常学习笔记",
 	lang: "zh_CN",
 	themeColor: {
 		hue: 210,
@@ -48,7 +48,7 @@ export const navBarConfig: NavBarConfig = {
 export const profileConfig: ProfileConfig = {
 	avatar: "assets/images/demo-avatar.png",
 	name: "SolskjaerSYSU",
-	bio: "一个持续记录编程实践、项目折腾和学习笔记的个人博客。",
+	bio: "一个持续整理 C++、数据结构和编程学习笔记的个人博客。",
 	links: [
 		{
 			name: "GitHub",

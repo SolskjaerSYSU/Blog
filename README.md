@@ -33,6 +33,7 @@ pnpm new-post <filename>
 - 关于页：`src/content/spec/about.md`
 - 站点信息：`src/config.ts`
 - 部署配置：`.github/workflows/deploy.yml`
+- 当前博客正文已经从 `D:\\笔记` 首批迁移完成，后续发布内容以仓库内文章为准，不再直接依赖原笔记目录
 
 文章 Front Matter 示例：
 
