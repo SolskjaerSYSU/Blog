@@ -4,7 +4,7 @@
 
 线上地址：
 
-- `https://solskjaersysu.github.io/`
+- `https://solskjaersysu.github.io/Blog/`
 
 ## 本地开发
 
@@ -52,10 +52,10 @@ lang: zh_CN
 
 主分支只保存源码，GitHub Actions 会在推送到 `main` 后自动构建并发布到 GitHub Pages。
 
-仓库建议命名为：
+当前仓库地址：
 
-- `SolskjaerSYSU.github.io`
+- `SolskjaerSYSU/Blog`
 
 GitHub Pages 地址为：
 
-- `https://solskjaersysu.github.io/`
+- `https://solskjaersysu.github.io/Blog/`

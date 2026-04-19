@@ -10,4 +10,4 @@
 
 这个站点基于 [Fuwari](https://github.com/saicaca/fuwari) 与 [Astro](https://astro.build) 搭建，并托管在 GitHub Pages。
 
-::github{repo="SolskjaerSYSU/SolskjaerSYSU.github.io"}
+::github{repo="SolskjaerSYSU/Blog"}
