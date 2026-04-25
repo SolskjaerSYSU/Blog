@@ -184,8 +184,13 @@ const bannerOffset =
 		@apply h-screen translate-y-0
 	}
 	.enable-banner.has-home-hero.is-home #banner img {
-		@apply object-cover object-center scale-[1.1];
-		transform: translate3d(0, var(--hero-parallax-offset, 0px), 0) scale(1.1);
+		@apply object-contain object-center scale-100;
+		transform: translate3d(0, var(--hero-parallax-offset, 0px), 0) scale(1);
+		will-change: transform;
+	}
+	.enable-banner.has-home-hero.is-home #banner-backdrop img {
+		@apply object-cover object-center scale-[1.12];
+		transform: translate3d(0, calc(var(--hero-parallax-offset, 0px) * 0.65), 0) scale(1.12);
 		will-change: transform;
 	}
 	.enable-banner #banner {

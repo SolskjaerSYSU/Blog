@@ -40,7 +40,7 @@ const hasBannerCredit =
 const hasBannerLink = !!siteConfig.banner.credit.url;
 
 const mainPanelTop = fullScreenHomeHero
-	? "calc(100vh + 2.5rem)"
+	? "100vh"
 	: siteConfig.banner.enable
 		? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
 		: "5.5rem";
@@ -57,12 +57,37 @@ const mainPanelTop = fullScreenHomeHero
 </div>
 
 <!-- Banner -->
-{siteConfig.banner.enable && <div id="banner-wrapper" class={`absolute z-10 w-full transition duration-700 overflow-hidden`} style={`top: -${BANNER_HEIGHT_EXTEND}vh`}>
+{siteConfig.banner.enable && !fullScreenHomeHero && <div id="banner-wrapper" class={`absolute z-10 w-full transition duration-700 overflow-hidden`} style={`top: -${BANNER_HEIGHT_EXTEND}vh`}>
     <ImageWrapper id="banner" alt="Banner image of the blog" class:list={["object-cover h-full transition duration-700 opacity-0 scale-105"]}
                   src={siteConfig.banner.src} position={siteConfig.banner.position}
     >
     </ImageWrapper>
 </div>}
+
+{siteConfig.banner.enable && fullScreenHomeHero && (
+    <div id="banner-wrapper" class="absolute inset-0 z-10 overflow-hidden">
+        <div class="absolute inset-0 scale-[1.08] opacity-90 blur-[18px]">
+            <ImageWrapper
+                id="banner-backdrop"
+                alt="Banner image backdrop of the blog"
+                class="h-full transition duration-700 opacity-0"
+                src={siteConfig.banner.src}
+                position="center"
+            />
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-b from-white/6 via-transparent to-slate-950/18"></div>
+        <div class="relative h-full w-full">
+            <ImageWrapper
+                id="banner"
+                alt="Banner image of the blog"
+                class="h-full transition duration-700 opacity-0"
+                src={siteConfig.banner.src}
+                position="center"
+                fit="contain"
+            />
+        </div>
+    </div>
+)}
 
 {fullScreenHomeHero && (
     <div class="absolute inset-x-0 top-0 z-20">
