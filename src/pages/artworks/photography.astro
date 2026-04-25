@@ -1,9 +1,27 @@
 ---
 import Footer from "@components/Footer.astro";
 import Navbar from "@components/Navbar.astro";
-import ImageWrapper from "@components/misc/ImageWrapper.astro";
 import Layout from "@layouts/Layout.astro";
+import { Image } from "astro:assets";
 import { url } from "../../utils/url-utils";
+
+const imageModules = import.meta.glob("../../assets/images/*.{jpg,jpeg,JPG,JPEG}", {
+	import: "default",
+	eager: true,
+});
+
+const galleryImages = Object.entries(imageModules)
+	.map(([filePath, image]) => {
+		const match = filePath.match(/\/(\d+)\.(jpg|jpeg)$/i);
+		if (!match) return null;
+		return {
+			order: Number(match[1]),
+			image,
+			alt: `Photography work ${match[1]}`,
+		};
+	})
+	.filter((item): item is { order: number; image: ImageMetadata; alt: string } => item !== null)
+	.sort((a, b) => a.order - b.order);
 ---
 
 <Layout title="Photography Works" description="摄影作品展示页">
@@ -16,102 +34,40 @@ import { url } from "../../utils/url-utils";
 		</div>
 	</div>
 
-	<section class="relative h-[100svh] overflow-hidden">
-		<div class="absolute inset-0">
-			<ImageWrapper
-				src="assets/images/DSC_1724.jpg"
-				alt="Photography works hero image"
-				class="h-full w-full"
-				position="center"
-			/>
-		</div>
-		<div class="absolute inset-0 bg-gradient-to-b from-slate-950/16 via-slate-950/8 to-slate-950/34"></div>
-
-		<div class="relative z-10 flex h-full flex-col items-center justify-center px-6 pb-24 pt-28 text-center">
-			<div class="rounded-[2rem] border border-white/24 bg-[rgba(166,184,199,0.22)] px-8 py-7 shadow-[0_30px_100px_rgba(15,23,42,0.3)] backdrop-blur-[18px] md:px-12 md:py-9">
-				<h1
-					class="hero-title-animation text-[clamp(3rem,7vw,5.6rem)] font-semibold italic leading-[1.02] tracking-[0.02em] text-white"
-					style={`animation-delay: 120ms; font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif;`}
-				>
-					Photography Works
-				</h1>
-				<p
-					class="hero-subtitle-animation mt-4 text-[clamp(1rem,2vw,1.24rem)] font-semibold tracking-[0.2em] text-white/92"
-					style="animation-delay: 280ms"
-				>
-					摄影作品
-				</p>
-			</div>
-		</div>
-
-		<div class="absolute inset-x-0 bottom-8 z-10 flex justify-center px-6">
-			<a
-				href="#photography-gallery"
-				class="hero-subtitle-animation rounded-[999px] border border-white/26 bg-white/14 px-7 py-3 text-sm font-semibold tracking-[0.2em] text-white/90 shadow-[0_18px_60px_rgba(15,23,42,0.24)] backdrop-blur-[16px] transition hover:bg-white/18"
-				style="animation-delay: 420ms"
-			>
-				查看作品
-			</a>
-		</div>
-	</section>
-
-	<section
-		id="photography-gallery"
-		class="bg-[linear-gradient(180deg,#e0ecff_0%,#eef5ff_30%,#f8fbff_100%)] px-6 py-16 md:px-8 md:py-20"
-	>
-		<div class="mx-auto max-w-[var(--page-width)] space-y-8">
-			<div class="rounded-[2.4rem] border border-white/60 bg-white/80 px-8 py-10 shadow-[0_24px_80px_rgba(148,163,184,0.16)] backdrop-blur-[14px] md:px-10 md:py-12">
+	<section class="bg-[linear-gradient(180deg,#dfe9ff_0%,#edf3ff_24%,#f6f9ff_100%)] px-6 pb-14 pt-28 md:px-8 md:pb-16 md:pt-32">
+		<div class="mx-auto max-w-[var(--page-width)]">
+			<div class="mx-auto max-w-3xl text-center">
 				<p class="text-sm font-semibold uppercase tracking-[0.28em] text-slate-500">
-					Photo Archive
+					My Photography Gallery
 				</p>
-				<h2 class="mt-4 text-[clamp(2rem,3vw,3.2rem)] font-bold tracking-[0.03em] text-slate-900">
-					摄影作品分区
-				</h2>
-				<p class="mt-5 max-w-4xl text-[1rem] leading-8 text-slate-700">
-					这里会整理风景、城市、光影与日常观察相关的摄影作品。现在已经独立成单独子页面，后续可以继续扩成专题相册、城市分类、器材记录或时间线展示。
-				</p>
+				<h1 class="mt-4 text-[clamp(2.4rem,4vw,4.4rem)] font-bold tracking-[0.04em] text-slate-950">
+					行摄世间
+				</h1>
+				<div class="mx-auto mt-5 h-2 w-24 rounded-full bg-[linear-gradient(90deg,rgba(96,165,250,0.18),rgba(96,165,250,0.55),rgba(96,165,250,0.18))]"></div>
 			</div>
 
-			<div class="grid gap-6 md:grid-cols-2">
-				<div class="overflow-hidden rounded-[2rem] border border-white/60 bg-white/80 shadow-[0_20px_70px_rgba(148,163,184,0.14)] backdrop-blur-[14px]">
-					<ImageWrapper
-						src="assets/images/DSC_1724.jpg"
-						alt="Photography preview one"
-						class="aspect-[4/3] w-full"
-						position="center"
-					/>
-					<div class="p-6">
-						<p class="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">
-							Preview A
-						</p>
-						<h3 class="mt-3 text-2xl font-bold text-slate-900">
-							城市与空间
-						</h3>
-						<p class="mt-4 text-[1rem] leading-8 text-slate-700">
-							这里预留给城市天际线、建筑、街道空间和都市观察类摄影作品。后续我们可以把每张照片继续接成独立作品卡。
-						</p>
+			<div class="mt-10 columns-1 gap-4 md:mt-12 md:columns-2 xl:columns-3">
+				{galleryImages.map(({ image, alt }) => (
+					<div class="mb-4 break-inside-avoid rounded-[1.6rem] border border-white/65 bg-white/72 p-2 shadow-[0_18px_50px_rgba(148,163,184,0.16)] backdrop-blur-[12px]">
+						<div class="overflow-hidden rounded-[1.15rem]">
+							<Image
+								src={image}
+								alt={alt}
+								class="h-auto w-full rounded-[1.15rem] transition duration-500 hover:scale-[1.015]"
+								widths={[500, 900, 1400]}
+								sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+							/>
+						</div>
 					</div>
-				</div>
-
-				<div class="rounded-[2rem] border border-white/60 bg-white/80 p-7 shadow-[0_20px_70px_rgba(148,163,184,0.14)] backdrop-blur-[14px]">
-					<p class="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">
-						Preview B
-					</p>
-					<h3 class="mt-4 text-2xl font-bold text-slate-900">
-						风景与光影
-					</h3>
-					<p class="mt-4 text-[1rem] leading-8 text-slate-700">
-						这里预留给风景、自然光、日落夜景与氛围感作品。等你整理好更多照片后，我们可以继续做成分组相册或瀑布流展示。
-					</p>
-				</div>
+				))}
 			</div>
 
-			<div class="flex justify-center pt-2">
+			<div class="mt-8 flex justify-start">
 				<a
 					href={url("/artworks/")}
-					class="rounded-[999px] border border-slate-300 bg-white/78 px-7 py-3 text-sm font-semibold tracking-[0.2em] text-slate-700 shadow-[0_14px_40px_rgba(148,163,184,0.14)] transition hover:bg-white"
+					class="rounded-[999px] border border-slate-300 bg-white/82 px-6 py-3 text-sm font-semibold tracking-[0.16em] text-slate-700 shadow-[0_14px_40px_rgba(148,163,184,0.14)] transition hover:bg-white"
 				>
-					返回作品首页
+					← 返回上一级
 				</a>
 			</div>
 
