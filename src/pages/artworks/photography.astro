@@ -8,9 +8,11 @@ import { url } from "../../utils/url-utils";
 const imageModules = import.meta.glob("../../assets/images/*.{jpg,jpeg,JPG,JPEG}", {
 	import: "default",
 	eager: true,
-});
+}) as Record<string, ImageMetadata>;
 
-const galleryImages = Object.entries(imageModules)
+const featuredImage = imageModules["../../assets/images/DSC_1724.jpg"];
+
+const numberedGalleryImages = Object.entries(imageModules)
 	.map(([filePath, image]) => {
 		const match = filePath.match(/\/(\d+)\.(jpg|jpeg)$/i);
 		if (!match) return null;
@@ -23,7 +25,14 @@ const galleryImages = Object.entries(imageModules)
 	.filter((item): item is { order: number; image: ImageMetadata; alt: string } => item !== null)
 	.sort((a, b) => a.order - b.order);
 
-const heroImage = galleryImages[0]?.image;
+const galleryImages = [
+	...(featuredImage
+		? [{ order: 0, image: featuredImage, alt: "Photography work DSC_1724" }]
+		: []),
+	...numberedGalleryImages,
+];
+
+const heroImage = featuredImage ?? galleryImages[0]?.image;
 ---
 
 <Layout title="Photography Works" description="Photography gallery for SolskjaerHu's artworks.">
