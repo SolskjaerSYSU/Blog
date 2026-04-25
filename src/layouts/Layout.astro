@@ -184,8 +184,8 @@ const bannerOffset =
 		@apply h-screen translate-y-0
 	}
 	.enable-banner.has-home-hero.is-home #banner img {
-		@apply object-contain object-center scale-[0.98];
-		transform: translate3d(0, var(--hero-parallax-offset, 0px), 0) scale(0.98);
+		@apply object-cover object-center scale-[1.08];
+		transform: translate3d(0, var(--hero-parallax-offset, 0px), 0) scale(1.08);
 		will-change: transform;
 	}
 	.enable-banner #banner {
@@ -389,7 +389,7 @@ function setBannerParallax() {
 	}
 
 	const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
-	const offset = Math.min(scrollTop * 0.16, 72);
+	const offset = Math.min(scrollTop * 0.12, 56);
 	document.documentElement.style.setProperty('--hero-parallax-offset', `${offset}px`);
 }
 
