@@ -18,6 +18,32 @@ html.is-animating .transition-swup-fade {
     }
 }
 
+@keyframes hero-fade-rise {
+    0% {
+        transform: translateY(2.75rem) scale(0.985);
+        opacity: 0;
+        filter: blur(8px);
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+@keyframes nav-fade-down {
+    0% {
+        transform: translateY(-1.25rem) scale(0.985);
+        opacity: 0;
+        filter: blur(10px);
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
 /* Main components */
 .onload-animation {
     opacity: 0;
@@ -26,6 +52,26 @@ html.is-animating .transition-swup-fade {
 }
 #navbar {
     animation-delay: 0ms
+}
+.hero-title-animation {
+    opacity: 0;
+    animation: 1100ms hero-fade-rise cubic-bezier(0.19, 1, 0.22, 1);
+    animation-fill-mode: forwards;
+}
+.hero-subtitle-animation {
+    opacity: 0;
+    animation: 1250ms hero-fade-rise cubic-bezier(0.19, 1, 0.22, 1);
+    animation-fill-mode: forwards;
+}
+.nav-float-animation {
+    opacity: 0;
+    animation: 900ms nav-fade-down cubic-bezier(0.19, 1, 0.22, 1);
+    animation-fill-mode: forwards;
+}
+.nav-item-animation {
+    opacity: 0;
+    animation: 700ms fade-in-up cubic-bezier(0.22, 1, 0.36, 1);
+    animation-fill-mode: forwards;
 }
 #sidebar {
     animation-delay: 100ms
