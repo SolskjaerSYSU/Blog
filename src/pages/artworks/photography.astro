@@ -22,27 +22,61 @@ const galleryImages = Object.entries(imageModules)
 	})
 	.filter((item): item is { order: number; image: ImageMetadata; alt: string } => item !== null)
 	.sort((a, b) => a.order - b.order);
+
+const heroImage = galleryImages[0]?.image;
 ---
 
-<Layout title="Photography Works" description="摄影作品展示页">
+<Layout title="Photography Works" description="Photography gallery for SolskjaerHu's artworks.">
 	<div
 		id="top-row"
 		class="z-50 pointer-events-none fixed inset-x-0 top-0 transition-all duration-700 max-w-[var(--page-width)] px-0 md:px-4 mx-auto"
 	>
 		<div id="navbar-wrapper" class="pointer-events-auto pt-0 transition-all">
-			<Navbar></Navbar>
+			<Navbar />
 		</div>
 	</div>
 
-	<section class="bg-[linear-gradient(180deg,#dfe9ff_0%,#edf3ff_24%,#f6f9ff_100%)] px-6 pb-14 pt-28 md:px-8 md:pb-16 md:pt-32">
+	<section class="relative isolate min-h-[100svh] overflow-hidden">
+		{heroImage && (
+			<>
+				<div
+					class="absolute inset-0 bg-center bg-cover scale-[1.03]"
+					style={`background-image: url(${heroImage.src});`}
+				></div>
+				<div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,15,28,0.18)_0%,rgba(8,15,28,0.28)_48%,rgba(8,15,28,0.5)_100%)]"></div>
+			</>
+		)}
+
+		<div class="relative z-10 flex min-h-[100svh] items-center justify-center px-6 pb-16 pt-28 md:px-8 md:pb-20 md:pt-32">
+			<div class="mx-auto flex w-full max-w-[var(--page-width)] flex-col items-center justify-center text-center">
+				<div class="w-full max-w-5xl rounded-[2rem] border border-white/35 bg-white/14 px-8 py-10 shadow-[0_28px_80px_rgba(15,23,42,0.24)] backdrop-blur-[18px] md:px-14 md:py-14">
+					<p class="text-sm font-semibold uppercase tracking-[0.34em] text-white/72">
+						My Photography Gallery
+					</p>
+					<h1 class="mt-5 font-serif text-[clamp(3.5rem,7vw,7.4rem)] italic leading-[0.95] tracking-[0.03em] text-white drop-shadow-[0_8px_30px_rgba(15,23,42,0.3)]">
+						Photography Works
+					</h1>
+				</div>
+
+				<a
+					href="#photo-gallery"
+					class="mt-10 rounded-[999px] border border-white/45 bg-white/16 px-8 py-4 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-[0_18px_45px_rgba(15,23,42,0.18)] backdrop-blur-[10px] transition hover:bg-white/24"
+				>
+					View Gallery
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<section
+		id="photo-gallery"
+		class="bg-[linear-gradient(180deg,#dfe9ff_0%,#edf3ff_22%,#f6f9ff_100%)] px-6 pb-14 pt-14 md:px-8 md:pb-16 md:pt-16"
+	>
 		<div class="mx-auto max-w-[var(--page-width)]">
 			<div class="mx-auto max-w-3xl text-center">
 				<p class="text-sm font-semibold uppercase tracking-[0.28em] text-slate-500">
-					My Photography Gallery
+					Collected Frames
 				</p>
-				<h1 class="mt-4 text-[clamp(2.4rem,4vw,4.4rem)] font-bold tracking-[0.04em] text-slate-950">
-					行摄世间
-				</h1>
 				<div class="mx-auto mt-5 h-2 w-24 rounded-full bg-[linear-gradient(90deg,rgba(96,165,250,0.18),rgba(96,165,250,0.55),rgba(96,165,250,0.18))]"></div>
 			</div>
 
@@ -67,7 +101,7 @@ const galleryImages = Object.entries(imageModules)
 					href={url("/artworks/")}
 					class="rounded-[999px] border border-slate-300 bg-white/82 px-6 py-3 text-sm font-semibold tracking-[0.16em] text-slate-700 shadow-[0_14px_40px_rgba(148,163,184,0.14)] transition hover:bg-white"
 				>
-					← 返回上一级
+					Back to Artworks
 				</a>
 			</div>
 
