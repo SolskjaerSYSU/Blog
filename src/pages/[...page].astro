@@ -1,5 +1,6 @@
 ---
 import type { GetStaticPaths } from "astro";
+import HomeIntro from "../components/HomeIntro.astro";
 import Pagination from "../components/control/Pagination.astro";
 import PostPage from "../components/PostPage.astro";
 import { PAGE_SIZE } from "../constants/constants";
@@ -17,7 +18,16 @@ const { page } = Astro.props;
 const len = page.data.length;
 ---
 
-<MainGridLayout>
-    <PostPage page={page}></PostPage>
+<MainGridLayout fullScreenHomeHero={page.currentPage === 1}>
+    {page.currentPage === 1 ? (
+        <div id="home-posts">
+            <div class="mb-6 md:mb-8">
+                <HomeIntro></HomeIntro>
+            </div>
+            <PostPage page={page}></PostPage>
+        </div>
+    ) : (
+        <PostPage page={page}></PostPage>
+    )}
     <Pagination class="mx-auto onload-animation" page={page} style={`animation-delay: calc(var(--content-delay) + ${(len)*50}ms)`}></Pagination>
 </MainGridLayout>

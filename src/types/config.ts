@@ -3,6 +3,10 @@ import type { AUTO_MODE, DARK_MODE, LIGHT_MODE } from "@constants/constants";
 export type SiteConfig = {
 	title: string;
 	subtitle: string;
+	homeHero: {
+		title: string;
+		subtitle: string;
+	};
 
 	lang:
 		| "en"

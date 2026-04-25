@@ -5,11 +5,14 @@ import type {
 	ProfileConfig,
 	SiteConfig,
 } from "./types/config";
-import { LinkPreset } from "./types/config";
 
 export const siteConfig: SiteConfig = {
 	title: "SolskjaerSYSU",
 	subtitle: "记录 C++、数据结构与日常学习笔记",
+	homeHero: {
+		title: "Welcome to SolskjærHu 's Blog",
+		subtitle: "Postscriptum ad infinitum",
+	},
 	lang: "zh_CN",
 	themeColor: {
 		hue: 210,
@@ -17,7 +20,7 @@ export const siteConfig: SiteConfig = {
 	},
 	banner: {
 		enable: true,
-		src: "assets/images/DSC_1724.jpg",
+		src: "assets/images/banner1.jpg",
 		position: "center",
 		credit: {
 			enable: false,
@@ -34,13 +37,21 @@ export const siteConfig: SiteConfig = {
 
 export const navBarConfig: NavBarConfig = {
 	links: [
-		LinkPreset.Home,
-		LinkPreset.Archive,
-		LinkPreset.About,
 		{
-			name: "GitHub",
-			url: "https://github.com/SolskjaerSYSU",
-			external: true,
+			name: "首页",
+			url: "/",
+		},
+		{
+			name: "作品",
+			url: "/archive/",
+		},
+		{
+			name: "随笔",
+			url: "/#home-posts",
+		},
+		{
+			name: "关于我",
+			url: "/about/",
 		},
 	],
 };

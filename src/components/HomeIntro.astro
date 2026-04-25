@@ -1,0 +1,78 @@
+---
+import { profileConfig } from "../config";
+import ImageWrapper from "./misc/ImageWrapper.astro";
+---
+
+<section id="home-intro" class="space-y-6 md:space-y-8">
+	<div
+		class="relative w-full overflow-hidden rounded-[2.2rem] border border-white/55 bg-white/68 p-6 md:p-8 lg:p-10 shadow-[0_28px_90px_rgba(148,163,184,0.18)] backdrop-blur-2xl"
+	>
+		<div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(186,230,253,0.5),transparent_28rem)]"></div>
+		<div class="relative grid items-center gap-8 md:grid-cols-[13rem_minmax(0,1fr)] lg:grid-cols-[15rem_minmax(0,1fr)]">
+			<div class="mx-auto w-full max-w-[12rem]">
+				<div class="overflow-hidden rounded-[1.8rem] border border-white/70 bg-white/80 p-2 shadow-[0_18px_40px_rgba(148,163,184,0.22)]">
+					<ImageWrapper
+						src={profileConfig.avatar || ""}
+						alt="Profile photo"
+						class="aspect-[4/5] rounded-[1.35rem]"
+						position="center"
+					></ImageWrapper>
+				</div>
+			</div>
+
+			<div class="text-slate-700">
+				<p class="text-sm font-semibold uppercase tracking-[0.28em] text-sky-700/80">
+					Personal Homepage
+				</p>
+				<h2 class="mt-3 text-[clamp(2rem,3.4vw,3.2rem)] font-bold tracking-[0.01em] text-slate-900">
+					这里是 SolskjærHu 的博客
+				</h2>
+				<p class="mt-4 max-w-3xl text-[1.06rem] leading-8 text-slate-700/90">
+					我把这里当作一个长期更新的个人站点，用来收纳学习过程里的知识、作品和想法。
+					它既是编程笔记的整理空间，也是一个更完整的个人表达入口。
+				</p>
+				<div class="mt-6 space-y-4 text-[1rem] leading-8 text-slate-700/88">
+					<p>
+						我主要会写 <strong class="text-slate-900">C++</strong>、
+						<strong class="text-slate-900">数据结构</strong> 相关的编程学习笔记，把零散练习和理解过程慢慢沉淀成更系统的内容。
+					</p>
+					<p>
+						除了技术内容，这里也会放自己的
+						<strong class="text-slate-900">摄影、绘画、程序项目作品</strong>，
+						让做过的东西有一个更稳定、更完整的展示空间。
+					</p>
+					<p>
+						同时我也会写一些 <strong class="text-slate-900">随笔</strong>，
+						包括测评、哲学思想、感悟散文等，让这个博客保留更自由也更个人化的一面。
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="grid gap-4 md:grid-cols-3">
+		<article class="rounded-[1.8rem] border border-white/55 bg-white/62 p-6 shadow-[0_20px_60px_rgba(148,163,184,0.15)] backdrop-blur-xl">
+			<p class="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700/80">技术</p>
+			<h3 class="mt-3 text-2xl font-bold text-slate-900">Programming Notes</h3>
+			<p class="mt-4 text-[0.98rem] leading-7 text-slate-700/90">
+				聚焦 C++、数据结构与编程学习过程，把课本知识、练习代码和自己的理解整理成可回看的技术笔记。
+			</p>
+		</article>
+
+		<article class="rounded-[1.8rem] border border-white/55 bg-white/62 p-6 shadow-[0_20px_60px_rgba(148,163,184,0.15)] backdrop-blur-xl">
+			<p class="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700/80">作品</p>
+			<h3 class="mt-3 text-2xl font-bold text-slate-900">Visual & Project Works</h3>
+			<p class="mt-4 text-[0.98rem] leading-7 text-slate-700/90">
+				收录摄影、绘画和程序项目作品，让兴趣与创作不只是零散存在，而是逐渐形成自己的作品档案。
+			</p>
+		</article>
+
+		<article class="rounded-[1.8rem] border border-white/55 bg-white/62 p-6 shadow-[0_20px_60px_rgba(148,163,184,0.15)] backdrop-blur-xl">
+			<p class="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700/80">随笔</p>
+			<h3 class="mt-3 text-2xl font-bold text-slate-900">Essays & Reflections</h3>
+			<p class="mt-4 text-[0.98rem] leading-7 text-slate-700/90">
+				记录测评、哲学思考、感悟散文与一些不适合写成教程的想法，让博客保留温度和呼吸感。
+			</p>
+		</article>
+	</div>
+</section>

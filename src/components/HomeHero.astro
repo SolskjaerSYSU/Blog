@@ -1,0 +1,24 @@
+---
+import { siteConfig } from "../config";
+---
+
+<section
+	id="home-hero"
+	class="relative h-screen flex items-center justify-center px-6 text-center"
+>
+	<div class="absolute inset-0 bg-gradient-to-b from-white/10 via-sky-50/10 to-black/20"></div>
+	<div class="relative z-10 max-w-6xl text-white">
+		<p
+			class="hero-title-animation text-[clamp(3.5rem,10vw,8rem)] font-bold tracking-[0.05em] drop-shadow-[0_14px_45px_rgba(0,0,0,0.28)]"
+			style="animation-delay: 140ms"
+		>
+			{siteConfig.homeHero.title}
+		</p>
+		<p
+			class="hero-subtitle-animation mt-6 text-[clamp(1rem,2.1vw,1.45rem)] font-medium tracking-[0.32em] text-white/90"
+			style="animation-delay: 320ms"
+		>
+			{siteConfig.homeHero.subtitle}
+		</p>
+	</div>
+</section>

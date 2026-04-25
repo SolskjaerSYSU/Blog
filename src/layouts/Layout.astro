@@ -26,9 +26,10 @@ interface Props {
 	description?: string;
 	lang?: string;
 	setOGTypeArticle?: boolean;
+	fullScreenHomeHero?: boolean;
 }
 
-let { title, banner, description, lang, setOGTypeArticle } = Astro.props;
+let { title, banner, description, lang, setOGTypeArticle, fullScreenHomeHero = false } = Astro.props;
 
 // apply a class to the body element to decide the height of the banner, only used for initial page load
 // Swup can update the body for each page visit, but it's after the page transition, causing a delay for banner height change
@@ -148,7 +149,7 @@ const bannerOffset =
 		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
 
 	</head>
-	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner}]}
+	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner, "has-home-hero": fullScreenHomeHero}]}
 		  data-overlayscrollbars-initialize
 	>
 		<ConfigCarrier></ConfigCarrier>
@@ -169,6 +170,9 @@ const bannerOffset =
 	.enable-banner.is-home #banner-wrapper {
 		@apply h-[var(--banner-height-home)] translate-y-[var(--banner-height-extend)]
 	}
+	.enable-banner.has-home-hero.is-home #banner-wrapper {
+		@apply h-screen translate-y-0
+	}
 	.enable-banner #banner-wrapper {
 		@apply h-[var(--banner-height-home)]
 	}
@@ -176,14 +180,28 @@ const bannerOffset =
 	.enable-banner.is-home #banner {
 		@apply h-[var(--banner-height-home)] translate-y-0
 	}
+	.enable-banner.has-home-hero.is-home #banner {
+		@apply h-screen translate-y-0
+	}
+	.enable-banner.has-home-hero.is-home #banner img {
+		@apply object-contain object-center scale-[0.98];
+		transform: translate3d(0, var(--hero-parallax-offset, 0px), 0) scale(0.98);
+		will-change: transform;
+	}
 	.enable-banner #banner {
 		@apply h-[var(--banner-height-home)] translate-y-[var(--bannerOffset)]
 	}
 	.enable-banner.is-home #main-grid {
 		@apply translate-y-[var(--banner-height-extend)];
 	}
+	.enable-banner.has-home-hero.is-home #main-grid {
+		@apply translate-y-0;
+	}
 	.enable-banner #top-row {
 		@apply h-[calc(var(--banner-height-home)_-_4.5rem)] transition-all duration-300
+	}
+	.enable-banner.has-home-hero.is-home #top-row {
+		@apply h-[calc(100vh_-_4.5rem)];
 	}
 	.enable-banner.is-home #sidebar-sticky {
 		@apply top-[calc(1rem_-_var(--banner-height-extend))]
@@ -363,12 +381,25 @@ function showBanner() {
 	banner.classList.remove('opacity-0', 'scale-105');
 }
 
+function setBannerParallax() {
+	if (!bannerEnabled) return;
+	if (!document.body.classList.contains('has-home-hero')) {
+		document.documentElement.style.setProperty('--hero-parallax-offset', '0px');
+		return;
+	}
+
+	const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+	const offset = Math.min(scrollTop * 0.16, 72);
+	document.documentElement.style.setProperty('--hero-parallax-offset', `${offset}px`);
+}
+
 function init() {
 	// disableAnimation()()		// TODO
 	loadTheme();
 	loadHue();
 	initCustomScrollbar();
 	showBanner();
+	setBannerParallax();
 }
 
 /* Load settings when entering the site */
@@ -458,6 +489,7 @@ let backToTopBtn = document.getElementById('back-to-top-btn');
 let toc = document.getElementById('toc-wrapper');
 let navbar = document.getElementById('navbar-wrapper')
 function scrollFunction() {
+	setBannerParallax();
 	let bannerHeight = window.innerHeight * (BANNER_HEIGHT / 100)
 
 	if (backToTopBtn) {
@@ -500,6 +532,7 @@ window.onresize = () => {
 	let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
 	offset = offset - offset % 4;
 	document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
+	setBannerParallax();
 }
 
 </script>
