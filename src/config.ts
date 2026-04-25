@@ -43,7 +43,7 @@ export const navBarConfig: NavBarConfig = {
 		},
 		{
 			name: "作品",
-			url: "/archive/",
+			url: "/artworks/",
 		},
 		{
 			name: "随笔",
