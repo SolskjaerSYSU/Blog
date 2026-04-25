@@ -40,7 +40,7 @@ const hasBannerCredit =
 const hasBannerLink = !!siteConfig.banner.credit.url;
 
 const mainPanelTop = fullScreenHomeHero
-	? `calc(100vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
+	? "calc(100vh + 2.5rem)"
 	: siteConfig.banner.enable
 		? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
 		: "5.5rem";
@@ -93,9 +93,9 @@ const mainPanelTop = fullScreenHomeHero
             </a>}
 
 
-            <SideBar class="mb-4 row-start-2 row-end-3 col-span-2 lg:row-start-1 lg:row-end-2 lg:col-span-1 lg:max-w-[17.5rem] onload-animation" headings={headings}></SideBar>
+            {!fullScreenHomeHero && <SideBar class="mb-4 row-start-2 row-end-3 col-span-2 lg:row-start-1 lg:row-end-2 lg:col-span-1 lg:max-w-[17.5rem] onload-animation" headings={headings}></SideBar>}
 
-            <main id="swup-container" class="transition-swup-fade col-span-2 lg:col-span-1 overflow-hidden">
+            <main id="swup-container" class:list={["transition-swup-fade overflow-hidden", fullScreenHomeHero ? "col-span-2 lg:col-span-2" : "col-span-2 lg:col-span-1"]}>
                 <div id="content-wrapper" class="onload-animation">
                     <!-- the overflow-hidden here prevent long text break the layout-->
                     <!-- make id different from windows.swup global property -->
