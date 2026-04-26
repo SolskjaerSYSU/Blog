@@ -10,7 +10,7 @@ export const siteConfig: SiteConfig = {
 	title: "SolskjaerSYSU",
 	subtitle: "记录 C++、数据结构与日常学习笔记",
 	homeHero: {
-		title: "Welcome to SolskjærHu 's Blog",
+		title: "Welcome to SolskjaerHu's Blog",
 		subtitle: "Postscriptum ad infinitum",
 	},
 	lang: "zh_CN",
