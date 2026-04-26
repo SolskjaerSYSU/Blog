@@ -5,7 +5,7 @@ import Layout from "@layouts/Layout.astro";
 import { Image } from "astro:assets";
 import { url } from "../../utils/url-utils";
 
-const imageModules = import.meta.glob("../../assets/images/*.{jpg,jpeg,JPG,JPEG}", {
+const imageModules = import.meta.glob("../../assets/images/*.{jpg,jpeg,JPG,JPEG,png,PNG,avif,AVIF}", {
 	import: "default",
 	eager: true,
 }) as Record<string, ImageMetadata>;
@@ -14,7 +14,7 @@ const featuredImage = imageModules["../../assets/images/DSC_1724.jpg"];
 
 const numberedGalleryImages = Object.entries(imageModules)
 	.map(([filePath, image]) => {
-		const match = filePath.match(/\/(\d+)\.(jpg|jpeg)$/i);
+		const match = filePath.match(/\/(\d+)\.(jpg|jpeg|png|avif)$/i);
 		if (!match) return null;
 		return {
 			order: Number(match[1]),
