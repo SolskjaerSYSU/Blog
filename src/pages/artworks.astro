@@ -6,13 +6,13 @@ import Layout from "@layouts/Layout.astro";
 import { url } from "../utils/url-utils";
 ---
 
-<Layout title="Artworks" description="绘画作品与摄影作品展示页">
+<Layout title="Artworks" description="Drawing and photography works showcase.">
 	<div
 		id="top-row"
 		class="z-50 pointer-events-none fixed inset-x-0 top-0 transition-all duration-700 max-w-[var(--page-width)] px-0 md:px-4 mx-auto"
 	>
 		<div id="navbar-wrapper" class="pointer-events-auto pt-0 transition-all">
-			<Navbar></Navbar>
+			<Navbar />
 		</div>
 	</div>
 
@@ -50,7 +50,7 @@ import { url } from "../utils/url-utils";
 				class="hero-subtitle-animation rounded-[999px] border border-white/26 bg-white/14 px-7 py-3 text-sm font-semibold tracking-[0.2em] text-white/90 shadow-[0_18px_60px_rgba(15,23,42,0.24)] backdrop-blur-[16px] transition hover:bg-white/18"
 				style="animation-delay: 420ms"
 			>
-				作品
+				Works
 			</a>
 		</div>
 	</section>
@@ -67,17 +67,21 @@ import { url } from "../utils/url-utils";
 				<h2 class="mt-4 text-[clamp(2rem,3vw,3.3rem)] font-bold tracking-[0.03em] text-slate-900">
 					作品分区
 				</h2>
-				<p class="mt-5 text-[1.02rem] leading-8 text-slate-700">
-					这里会逐步整理我的绘画作品和摄影作品。先把“作品”做成独立路径，后续每个分区都可以继续单独扩展，不再和博客归档混在一起。
-				</p>
 			</div>
 
 			<a
 				href={url("/artworks/painting/")}
 				class="group relative block overflow-hidden rounded-[2.2rem] border border-white/45 shadow-[0_26px_90px_rgba(148,163,184,0.22)]"
 			>
-				<div class="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(255,247,174,0.82),transparent_18%),radial-gradient(circle_at_70%_25%,rgba(239,68,68,0.44),transparent_24%),radial-gradient(circle_at_55%_78%,rgba(59,130,246,0.42),transparent_26%),linear-gradient(135deg,rgba(36,99,235,0.92),rgba(251,191,36,0.78)_48%,rgba(248,113,113,0.84))]"></div>
-				<div class="absolute inset-0 bg-black/12 transition duration-500 group-hover:bg-black/8"></div>
+				<div class="absolute inset-0">
+					<ImageWrapper
+						src="assets/images/draw1.png"
+						alt="Drawing works cover"
+						class="h-full w-full transition duration-500 group-hover:scale-[1.03]"
+						position="center"
+					/>
+				</div>
+				<div class="absolute inset-0 bg-black/28 transition duration-500 group-hover:bg-black/22"></div>
 				<div class="relative flex min-h-[17rem] items-center justify-center px-6 py-12 text-center md:min-h-[19rem]">
 					<div>
 						<h3 class="text-[clamp(2.3rem,4vw,4.4rem)] font-bold tracking-[0.05em] text-white drop-shadow-[0_12px_30px_rgba(0,0,0,0.2)]">
@@ -120,33 +124,6 @@ import { url } from "../utils/url-utils";
 					</div>
 				</div>
 			</a>
-
-			<div class="rounded-[2.4rem] border border-white/60 bg-white/76 px-8 py-10 shadow-[0_24px_80px_rgba(148,163,184,0.16)] backdrop-blur-[14px] md:px-10 md:py-12">
-				<div class="grid gap-8 lg:grid-cols-2">
-					<div class="rounded-[2rem] border border-slate-200/80 bg-white/78 p-6 shadow-[0_16px_50px_rgba(148,163,184,0.12)]">
-						<p class="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">
-							Drawing Works
-						</p>
-						<h3 class="mt-4 text-3xl font-bold tracking-[0.03em] text-slate-900">
-							绘画作品子页面
-						</h3>
-						<p class="mt-4 text-[1rem] leading-8 text-slate-700">
-							现在已拆分为独立路径，后续可以单独维护作品封面、分组、单张详情和系列介绍，不再和摄影部分耦合。
-						</p>
-					</div>
-					<div class="rounded-[2rem] border border-slate-200/80 bg-white/78 p-6 shadow-[0_16px_50px_rgba(148,163,184,0.12)]">
-						<p class="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">
-							Photography Works
-						</p>
-						<h3 class="mt-4 text-3xl font-bold tracking-[0.03em] text-slate-900">
-							摄影作品子页面
-						</h3>
-						<p class="mt-4 text-[1rem] leading-8 text-slate-700">
-							摄影部分同样已独立成单独路由，之后无论是专题相册、时间轴还是城市分类，都可以继续单独扩展。
-						</p>
-					</div>
-				</div>
-			</div>
 
 			<div class="pt-4">
 				<Footer />
