@@ -2,100 +2,96 @@
 import Footer from "@components/Footer.astro";
 import Navbar from "@components/Navbar.astro";
 import Layout from "@layouts/Layout.astro";
+import { Image } from "astro:assets";
 import { url } from "../../utils/url-utils";
+
+const imageModules = import.meta.glob("../../assets/images/draw*.png", {
+	import: "default",
+	eager: true,
+}) as Record<string, ImageMetadata>;
+
+const heroImage = imageModules["../../assets/images/draw1.png"];
+
+const galleryImages = Object.entries(imageModules)
+	.map(([filePath, image]) => {
+		const match = filePath.match(/draw(\d+)\.png$/i);
+		if (!match) return null;
+		return {
+			order: Number(match[1]),
+			image,
+			alt: `Drawing work ${match[1]}`,
+		};
+	})
+	.filter((item): item is { order: number; image: ImageMetadata; alt: string } => item !== null)
+	.sort((a, b) => a.order - b.order);
 ---
 
-<Layout title="Drawing Works" description="绘画作品展示页">
+<Layout title="Drawing Works" description="Drawing gallery for SolskjaerHu's artworks.">
 	<div
 		id="top-row"
 		class="z-50 pointer-events-none fixed inset-x-0 top-0 transition-all duration-700 max-w-[var(--page-width)] px-0 md:px-4 mx-auto"
 	>
 		<div id="navbar-wrapper" class="pointer-events-auto pt-0 transition-all">
-			<Navbar></Navbar>
+			<Navbar />
 		</div>
 	</div>
 
-	<section class="relative h-[100svh] overflow-hidden">
-		<div class="absolute inset-0 bg-[radial-gradient(circle_at_24%_20%,rgba(255,246,173,0.95),transparent_18%),radial-gradient(circle_at_72%_22%,rgba(248,113,113,0.45),transparent_24%),radial-gradient(circle_at_62%_76%,rgba(96,165,250,0.42),transparent_28%),linear-gradient(135deg,#1d4ed8_0%,#f59e0b_48%,#ef4444_100%)]"></div>
-		<div class="absolute inset-0 bg-gradient-to-b from-slate-950/8 via-transparent to-slate-950/26"></div>
+	<section class="relative isolate min-h-[100svh] overflow-hidden">
+		{heroImage && (
+			<>
+				<div
+					class="absolute inset-0 bg-center bg-cover scale-[1.03]"
+					style={`background-image: url(${heroImage.src});`}
+				></div>
+				<div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,15,28,0.14)_0%,rgba(8,15,28,0.24)_48%,rgba(8,15,28,0.46)_100%)]"></div>
+			</>
+		)}
 
-		<div class="relative z-10 flex h-full flex-col items-center justify-center px-6 pb-24 pt-28 text-center">
-			<div class="rounded-[2rem] border border-white/24 bg-white/14 px-8 py-7 shadow-[0_30px_100px_rgba(15,23,42,0.26)] backdrop-blur-[18px] md:px-12 md:py-9">
-				<h1
-					class="hero-title-animation text-[clamp(3rem,7vw,5.6rem)] font-semibold italic leading-[1.02] tracking-[0.02em] text-white"
-					style={`animation-delay: 120ms; font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif;`}
+		<div class="relative z-10 flex min-h-[100svh] items-center justify-center px-6 pb-16 pt-28 md:px-8 md:pb-20 md:pt-32">
+			<div class="mx-auto flex w-full max-w-[var(--page-width)] flex-col items-center justify-center text-center">
+				<div class="w-full max-w-5xl rounded-[2rem] border border-white/35 bg-white/14 px-8 py-10 shadow-[0_28px_80px_rgba(15,23,42,0.24)] backdrop-blur-[18px] md:px-14 md:py-14">
+					<h1 class="font-serif text-[clamp(3.5rem,7vw,7.4rem)] italic leading-[0.95] tracking-[0.03em] text-white drop-shadow-[0_8px_30px_rgba(15,23,42,0.3)]">
+						Drawing Works
+					</h1>
+				</div>
+
+				<a
+					href="#painting-gallery"
+					class="mt-10 rounded-[999px] border border-white/45 bg-white/16 px-8 py-4 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-[0_18px_45px_rgba(15,23,42,0.18)] backdrop-blur-[10px] transition hover:bg-white/24"
 				>
-					Drawing Works
-				</h1>
-				<p
-					class="hero-subtitle-animation mt-4 text-[clamp(1rem,2vw,1.24rem)] font-semibold tracking-[0.2em] text-white/92"
-					style="animation-delay: 280ms"
-				>
-					绘画作品
-				</p>
+					View Gallery
+				</a>
 			</div>
-		</div>
-
-		<div class="absolute inset-x-0 bottom-8 z-10 flex justify-center px-6">
-			<a
-				href="#painting-gallery"
-				class="hero-subtitle-animation rounded-[999px] border border-white/26 bg-white/14 px-7 py-3 text-sm font-semibold tracking-[0.2em] text-white/90 shadow-[0_18px_60px_rgba(15,23,42,0.24)] backdrop-blur-[16px] transition hover:bg-white/18"
-				style="animation-delay: 420ms"
-			>
-				查看作品
-			</a>
 		</div>
 	</section>
 
 	<section
 		id="painting-gallery"
-		class="bg-[linear-gradient(180deg,#fff7ed_0%,#fef2f2_34%,#eff6ff_100%)] px-6 py-16 md:px-8 md:py-20"
+		class="bg-[linear-gradient(180deg,#f7f1ff_0%,#f7f6ff_22%,#f9fbff_100%)] px-6 pb-14 pt-14 md:px-8 md:pb-16 md:pt-16"
 	>
-		<div class="mx-auto max-w-[var(--page-width)] space-y-8">
-			<div class="rounded-[2.4rem] border border-white/60 bg-white/80 px-8 py-10 shadow-[0_24px_80px_rgba(148,163,184,0.16)] backdrop-blur-[14px] md:px-10 md:py-12">
-				<p class="text-sm font-semibold uppercase tracking-[0.28em] text-slate-500">
-					Studio Notes
-				</p>
-				<h2 class="mt-4 text-[clamp(2rem,3vw,3.2rem)] font-bold tracking-[0.03em] text-slate-900">
-					绘画作品分区
-				</h2>
-				<p class="mt-5 max-w-4xl text-[1rem] leading-8 text-slate-700">
-					这里用于整理绘画相关作品，包括手绘、色彩练习、创意草图与完成稿。当前先把独立子页面结构搭起来，方便后续继续扩成作品墙、系列目录或者单张作品详情页。
-				</p>
+		<div class="mx-auto max-w-[var(--page-width)]">
+			<div class="mt-10 columns-1 gap-4 md:mt-12 md:columns-2 xl:columns-3">
+				{galleryImages.map(({ image, alt }) => (
+					<div class="mb-4 break-inside-avoid rounded-[1.6rem] border border-white/65 bg-white/72 p-2 shadow-[0_18px_50px_rgba(148,163,184,0.16)] backdrop-blur-[12px]">
+						<div class="overflow-hidden rounded-[1.15rem]">
+							<Image
+								src={image}
+								alt={alt}
+								class="h-auto w-full rounded-[1.15rem] transition duration-500 hover:scale-[1.015]"
+								widths={[500, 900, 1400]}
+								sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+							/>
+						</div>
+					</div>
+				))}
 			</div>
 
-			<div class="grid gap-6 md:grid-cols-2">
-				<div class="rounded-[2rem] border border-white/60 bg-white/78 p-7 shadow-[0_20px_70px_rgba(148,163,184,0.14)] backdrop-blur-[14px]">
-					<p class="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">
-						Section A
-					</p>
-					<h3 class="mt-4 text-2xl font-bold text-slate-900">
-						创作中的系列
-					</h3>
-					<p class="mt-4 text-[1rem] leading-8 text-slate-700">
-						这里预留给正在进行的绘画项目，例如主题速写、角色设定、场景构图和材质实验。之后可以继续加缩略图网格与创作说明。
-					</p>
-				</div>
-
-				<div class="rounded-[2rem] border border-white/60 bg-white/78 p-7 shadow-[0_20px_70px_rgba(148,163,184,0.14)] backdrop-blur-[14px]">
-					<p class="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">
-						Section B
-					</p>
-					<h3 class="mt-4 text-2xl font-bold text-slate-900">
-						完成作品展示
-					</h3>
-					<p class="mt-4 text-[1rem] leading-8 text-slate-700">
-						这里预留给已完成的绘画作品，可以继续按媒介、时间或主题归类。等你准备好作品图后，我们就能直接往这里接真实内容。
-					</p>
-				</div>
-			</div>
-
-			<div class="flex justify-center pt-2">
+			<div class="mt-8 flex justify-start">
 				<a
 					href={url("/artworks/")}
-					class="rounded-[999px] border border-slate-300 bg-white/78 px-7 py-3 text-sm font-semibold tracking-[0.2em] text-slate-700 shadow-[0_14px_40px_rgba(148,163,184,0.14)] transition hover:bg-white"
+					class="rounded-[999px] border border-slate-300 bg-white/82 px-6 py-3 text-sm font-semibold tracking-[0.16em] text-slate-700 shadow-[0_14px_40px_rgba(148,163,184,0.14)] transition hover:bg-white"
 				>
-					返回作品首页
+					Back to Artworks
 				</a>
 			</div>
 
