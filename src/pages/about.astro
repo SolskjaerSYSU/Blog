@@ -2,28 +2,78 @@
 import { Icon } from "astro-icon/components";
 import Footer from "@components/Footer.astro";
 import Navbar from "@components/Navbar.astro";
-import Profile from "@components/widget/Profile.astro";
 import ImageWrapper from "@components/misc/ImageWrapper.astro";
+import Profile from "@components/widget/Profile.astro";
 import Layout from "@layouts/Layout.astro";
 
 const techStack = [
-	"C",
-	"C++",
-	"Python",
-	"JavaScript",
-	"HTML5",
-	"CSS3",
-	"Astro",
-	"Git",
-	"Linux",
-	"MATLAB",
+	{
+		label: "C",
+		short: "C",
+		bg: "bg-[#4354b8]",
+		textClass: "text-white",
+	},
+	{
+		label: "HTML5",
+		icon: "fa6-brands:html5",
+		bg: "bg-[#eb5b20]",
+		textClass: "text-white",
+	},
+	{
+		label: "CSS3",
+		icon: "fa6-brands:css3-alt",
+		bg: "bg-[#1572b6]",
+		textClass: "text-white",
+	},
+	{
+		label: "JavaScript",
+		icon: "fa6-brands:js",
+		bg: "bg-[#f7df1e]",
+		textClass: "text-slate-900",
+	},
+	{
+		label: "Python",
+		icon: "fa6-brands:python",
+		bg: "bg-[#366a96]",
+		textClass: "text-white",
+	},
+	{
+		label: "Git",
+		icon: "fa6-brands:git-alt",
+		bg: "bg-[#f05133]",
+		textClass: "text-white",
+	},
+	{
+		label: "Markdown",
+		icon: "material-symbols:markdown-rounded",
+		bg: "bg-[#2b2d42]",
+		textClass: "text-white",
+	},
+	{
+		label: "C++",
+		short: "C++",
+		bg: "bg-[#1f3f8f]",
+		textClass: "text-white",
+	},
+	{
+		label: "Linux",
+		icon: "fa6-brands:linux",
+		bg: "bg-[#111827]",
+		textClass: "text-white",
+	},
+	{
+		label: "MATLAB",
+		short: "Mx",
+		bg: "bg-[linear-gradient(135deg,#ff7f50_0%,#ffb347_45%,#2f80ed_100%)]",
+		textClass: "text-white",
+	},
 ];
 ---
 
 <Layout title="About" description="About SolskjaerSYSU">
 	<div
 		id="top-row"
-		class="z-50 pointer-events-none fixed inset-x-0 top-0 transition-all duration-700 max-w-[var(--page-width)] px-0 md:px-4 mx-auto"
+		class="pointer-events-none fixed inset-x-0 top-0 z-50 mx-auto max-w-[var(--page-width)] px-0 transition-all duration-700 md:px-4"
 	>
 		<div id="navbar-wrapper" class="pointer-events-auto pt-0 transition-all">
 			<Navbar />
@@ -115,16 +165,35 @@ const techStack = [
 
 				<div class="card-base border border-white/65 bg-white/78 px-8 py-8 shadow-[0_24px_80px_rgba(148,163,184,0.16)]">
 					<p class="text-sm font-semibold uppercase tracking-[0.28em] text-slate-500">
-						Tech Stack
+						Skills
 					</p>
 					<h2 class="mt-4 text-[clamp(2rem,3vw,3rem)] font-bold tracking-[0.03em] text-slate-950">
 						技术栈
 					</h2>
-					<div class="mt-6 flex flex-wrap gap-3">
+					<div class="mt-6 flex flex-wrap gap-4">
 						{techStack.map((item) => (
-							<span class="rounded-[999px] border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold tracking-[0.08em] text-slate-700 shadow-[0_8px_20px_rgba(148,163,184,0.08)]">
-								{item}
-							</span>
+							<div class="flex flex-col items-center gap-2">
+								<div
+									class:list={[
+										"flex h-24 w-24 items-center justify-center rounded-[1.65rem] shadow-[0_16px_32px_rgba(148,163,184,0.18)]",
+										item.bg,
+									]}
+								>
+									{item.icon ? (
+										<Icon
+											name={item.icon}
+											class:list={["text-[3rem]", item.textClass]}
+										/>
+									) : (
+										<span class:list={["text-[2rem] font-black tracking-tight", item.textClass]}>
+											{item.short}
+										</span>
+									)}
+								</div>
+								<span class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">
+									{item.label}
+								</span>
+							</div>
 						))}
 					</div>
 				</div>
@@ -136,17 +205,19 @@ const techStack = [
 					<h2 class="mt-4 text-[clamp(2rem,3vw,3rem)] font-bold tracking-[0.03em] text-slate-950">
 						MBTI
 					</h2>
-					<div class="mt-6 flex items-center gap-5 rounded-[1.6rem] border border-slate-200/80 bg-[linear-gradient(135deg,#eff6ff_0%,#f8fafc_100%)] px-6 py-6">
-						<div class="flex h-20 w-20 items-center justify-center rounded-[1.5rem] bg-[linear-gradient(135deg,#1e293b,#334155)] text-white shadow-[0_18px_40px_rgba(30,41,59,0.2)]">
-							<Icon name="material-symbols:neurology-outline-rounded" class="text-[2.4rem]" />
+					<div class="mt-6 rounded-[1.8rem] border border-slate-200/80 bg-[linear-gradient(135deg,#f7f2ff_0%,#fefbff_100%)] px-6 py-6 shadow-[0_20px_40px_rgba(167,139,250,0.12)]">
+						<div class="mb-4 inline-flex rounded-[999px] bg-[#8b2cf5] px-4 py-2 text-sm font-bold tracking-[0.08em] text-white shadow-[0_12px_30px_rgba(139,44,245,0.25)]">
+							INTJ
 						</div>
-						<div>
-							<div class="text-4xl font-bold tracking-[0.08em] text-slate-900">INTJ</div>
-							<div class="mt-2 text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
-								The Architect
+						<div class="flex flex-col items-center gap-5 md:flex-row md:items-end">
+							<div class="flex h-44 w-44 items-center justify-center rounded-[2rem] bg-[linear-gradient(180deg,#efe3ff_0%,#ffffff_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_10px_24px_rgba(148,163,184,0.12)]">
+								<Icon name="material-symbols:architecture-rounded" class="text-[6.5rem] text-[#7c3aed]" />
 							</div>
-							<div class="mt-2 text-[1rem] text-slate-700">
-								偏好独立思考、长期规划和系统性解决问题。
+							<div class="pb-2 text-center md:text-left">
+								<div class="text-4xl font-black tracking-[0.06em] text-slate-900">建筑师</div>
+								<div class="mt-2 text-lg font-semibold tracking-[0.18em] text-[#8b2cf5]">
+									The Architect
+								</div>
 							</div>
 						</div>
 					</div>
