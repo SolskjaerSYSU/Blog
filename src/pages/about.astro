@@ -1,25 +1,161 @@
 ---
+import { Icon } from "astro-icon/components";
+import Footer from "@components/Footer.astro";
+import Navbar from "@components/Navbar.astro";
+import Profile from "@components/widget/Profile.astro";
+import ImageWrapper from "@components/misc/ImageWrapper.astro";
+import Layout from "@layouts/Layout.astro";
 
-import { getEntry, render } from "astro:content";
-import Markdown from "@components/misc/Markdown.astro";
-import I18nKey from "../i18n/i18nKey";
-import { i18n } from "../i18n/translation";
-import MainGridLayout from "../layouts/MainGridLayout.astro";
-
-const aboutPost = await getEntry("spec", "about");
-
-if (!aboutPost) {
-	throw new Error("About page content not found");
-}
-
-const { Content } = await render(aboutPost);
+const techStack = [
+	"C",
+	"C++",
+	"Python",
+	"JavaScript",
+	"HTML5",
+	"CSS3",
+	"Astro",
+	"Git",
+	"Linux",
+	"MATLAB",
+];
 ---
-<MainGridLayout title={i18n(I18nKey.about)} description={i18n(I18nKey.about)}>
-    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
-        <div class="card-base z-10 px-9 py-6 relative w-full ">
-            <Markdown class="mt-2">
-                <Content />
-            </Markdown>
-        </div>
-    </div>
-</MainGridLayout>
+
+<Layout title="About" description="About SolskjaerSYSU">
+	<div
+		id="top-row"
+		class="z-50 pointer-events-none fixed inset-x-0 top-0 transition-all duration-700 max-w-[var(--page-width)] px-0 md:px-4 mx-auto"
+	>
+		<div id="navbar-wrapper" class="pointer-events-auto pt-0 transition-all">
+			<Navbar />
+		</div>
+	</div>
+
+	<section class="relative min-h-[100svh] overflow-hidden">
+		<div class="absolute inset-0">
+			<ImageWrapper
+				src="assets/images/DSC_1724.jpg"
+				alt="About page hero image"
+				class="h-full w-full"
+				position="center"
+			/>
+		</div>
+		<div class="absolute inset-0 bg-gradient-to-b from-slate-950/12 via-slate-950/12 to-slate-950/40"></div>
+
+		<div class="relative z-10 flex min-h-[100svh] items-center justify-center px-6 pb-20 pt-28 text-center md:px-8 md:pt-32">
+			<div class="w-full max-w-[var(--page-width)]">
+				<div class="mx-auto w-full max-w-4xl rounded-[2rem] border border-white/30 bg-[rgba(171,192,205,0.22)] px-8 py-10 shadow-[0_30px_100px_rgba(15,23,42,0.32)] backdrop-blur-[18px] md:px-14 md:py-14">
+					<p class="text-sm font-semibold uppercase tracking-[0.32em] text-white/76">
+						Profile & Notes
+					</p>
+					<h1 class="mt-5 font-serif text-[clamp(3.5rem,7vw,7rem)] italic leading-[0.95] tracking-[0.03em] text-white drop-shadow-[0_12px_30px_rgba(15,23,42,0.28)]">
+						About Me
+					</h1>
+				</div>
+
+				<a
+					href="#about-panels"
+					class="mt-10 inline-flex rounded-[999px] border border-white/28 bg-white/16 px-8 py-4 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-[0_18px_45px_rgba(15,23,42,0.18)] backdrop-blur-[10px] transition hover:bg-white/24"
+				>
+					Explore
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<section
+		id="about-panels"
+		class="bg-[linear-gradient(180deg,#dbe6fb_0%,#edf3ff_24%,#f8fbff_100%)] px-6 pb-14 pt-14 md:px-8 md:pb-20 md:pt-16"
+	>
+		<div class="mx-auto grid max-w-[var(--page-width)] gap-6 lg:grid-cols-[18rem_minmax(0,1fr)]">
+			<div class="lg:sticky lg:top-24 lg:self-start">
+				<Profile />
+			</div>
+
+			<div class="grid gap-6 xl:grid-cols-2">
+				<div class="card-base border border-white/65 bg-white/78 px-8 py-8 shadow-[0_24px_80px_rgba(148,163,184,0.16)] xl:col-span-2">
+					<p class="text-sm font-semibold uppercase tracking-[0.28em] text-slate-500">
+						About Me
+					</p>
+					<h2 class="mt-4 text-[clamp(2rem,3vw,3.1rem)] font-bold tracking-[0.03em] text-slate-950">
+						关于我
+					</h2>
+					<div class="mt-5 space-y-4 text-[1rem] leading-8 text-slate-700">
+						<p>
+							这里是 SolskjaerSYSU 的个人博客，也是我整理学习笔记、作品与长期项目的地方。
+						</p>
+						<p>
+							我主要在这里记录 C++、数据结构和编程实践中的学习过程，也会放自己的摄影、绘画、Github 项目以及一些随笔。
+						</p>
+						<p>
+							我希望把这里慢慢做成一个持续生长的个人档案库，既能沉淀技术，也能保留兴趣、观察和表达。
+						</p>
+					</div>
+				</div>
+
+				<div class="card-base border border-white/65 bg-white/78 px-8 py-8 shadow-[0_24px_80px_rgba(148,163,184,0.16)] xl:col-span-2">
+					<p class="text-sm font-semibold uppercase tracking-[0.28em] text-slate-500">
+						Github Activity
+					</p>
+					<h2 class="mt-4 text-[clamp(2rem,3vw,3rem)] font-bold tracking-[0.03em] text-slate-950">
+						Github贡献量可视化
+					</h2>
+					<a
+						href="https://github.com/SolskjaerSYSU"
+						target="_blank"
+						rel="noreferrer"
+						class="mt-6 block overflow-hidden rounded-[1.6rem] border border-slate-200/80 bg-white p-4 transition hover:border-slate-300"
+					>
+						<img
+							src="https://ghchart.rshah.org/2563eb/SolskjaerSYSU"
+							alt="Github contribution chart for SolskjaerSYSU"
+							class="w-full rounded-[1rem]"
+						/>
+					</a>
+				</div>
+
+				<div class="card-base border border-white/65 bg-white/78 px-8 py-8 shadow-[0_24px_80px_rgba(148,163,184,0.16)]">
+					<p class="text-sm font-semibold uppercase tracking-[0.28em] text-slate-500">
+						Tech Stack
+					</p>
+					<h2 class="mt-4 text-[clamp(2rem,3vw,3rem)] font-bold tracking-[0.03em] text-slate-950">
+						技术栈
+					</h2>
+					<div class="mt-6 flex flex-wrap gap-3">
+						{techStack.map((item) => (
+							<span class="rounded-[999px] border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold tracking-[0.08em] text-slate-700 shadow-[0_8px_20px_rgba(148,163,184,0.08)]">
+								{item}
+							</span>
+						))}
+					</div>
+				</div>
+
+				<div class="card-base border border-white/65 bg-white/78 px-8 py-8 shadow-[0_24px_80px_rgba(148,163,184,0.16)]">
+					<p class="text-sm font-semibold uppercase tracking-[0.28em] text-slate-500">
+						Personality
+					</p>
+					<h2 class="mt-4 text-[clamp(2rem,3vw,3rem)] font-bold tracking-[0.03em] text-slate-950">
+						MBTI
+					</h2>
+					<div class="mt-6 flex items-center gap-5 rounded-[1.6rem] border border-slate-200/80 bg-[linear-gradient(135deg,#eff6ff_0%,#f8fafc_100%)] px-6 py-6">
+						<div class="flex h-20 w-20 items-center justify-center rounded-[1.5rem] bg-[linear-gradient(135deg,#1e293b,#334155)] text-white shadow-[0_18px_40px_rgba(30,41,59,0.2)]">
+							<Icon name="material-symbols:neurology-outline-rounded" class="text-[2.4rem]" />
+						</div>
+						<div>
+							<div class="text-4xl font-bold tracking-[0.08em] text-slate-900">INTJ</div>
+							<div class="mt-2 text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
+								The Architect
+							</div>
+							<div class="mt-2 text-[1rem] text-slate-700">
+								偏好独立思考、长期规划和系统性解决问题。
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="xl:col-span-2">
+					<Footer />
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>
