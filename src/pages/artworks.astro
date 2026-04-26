@@ -6,7 +6,7 @@ import Layout from "@layouts/Layout.astro";
 import { url } from "../utils/url-utils";
 ---
 
-<Layout title="Artworks" description="Drawing and photography works showcase.">
+<Layout title="Artworks" description="Drawing, photography, and Github project showcases.">
 	<div
 		id="top-row"
 		class="z-50 pointer-events-none fixed inset-x-0 top-0 transition-all duration-700 max-w-[var(--page-width)] px-0 md:px-4 mx-auto"
@@ -39,7 +39,7 @@ import { url } from "../utils/url-utils";
 					class="hero-subtitle-animation mt-4 text-[clamp(1rem,2vw,1.28rem)] font-semibold tracking-[0.22em] text-white/92"
 					style="animation-delay: 280ms"
 				>
-					Drawing & Photography
+					Drawing, Photography & Projects
 				</p>
 			</div>
 		</div>
@@ -120,6 +120,30 @@ import { url } from "../utils/url-utils";
 						</p>
 						<p class="mt-5 text-sm font-semibold tracking-[0.22em] text-white/86">
 							进入分区
+						</p>
+					</div>
+				</div>
+			</a>
+
+			<a
+				href="https://github.com/SolskjaerSYSU/Projects"
+				target="_blank"
+				rel="noreferrer"
+				class="group relative block overflow-hidden rounded-[2.2rem] border border-white/45 shadow-[0_26px_90px_rgba(148,163,184,0.22)]"
+			>
+				<div class="absolute inset-0 bg-[radial-gradient(circle_at_22%_22%,rgba(255,255,255,0.16),transparent_18%),radial-gradient(circle_at_78%_24%,rgba(96,165,250,0.22),transparent_22%),linear-gradient(135deg,rgba(15,23,42,0.98)_0%,rgba(30,41,59,0.96)_38%,rgba(51,65,85,0.9)_70%,rgba(71,85,105,0.86)_100%)]"></div>
+				<div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(148,163,184,0.02),rgba(15,23,42,0.14))] transition duration-500 group-hover:bg-[linear-gradient(180deg,rgba(148,163,184,0.01),rgba(15,23,42,0.08))]"></div>
+				<div class="absolute inset-y-0 left-[-8%] w-[34%] rotate-[12deg] bg-white/6 blur-3xl transition duration-500 group-hover:left-[4%]"></div>
+				<div class="relative flex min-h-[17rem] items-center justify-center px-6 py-12 text-center md:min-h-[19rem]">
+					<div>
+						<h3 class="text-[clamp(2.3rem,4vw,4.4rem)] font-bold tracking-[0.05em] text-white drop-shadow-[0_12px_30px_rgba(0,0,0,0.2)]">
+							Github项目
+						</h3>
+						<p class="mt-4 text-[1rem] font-medium tracking-[0.18em] text-white/88">
+							Github Projects
+						</p>
+						<p class="mt-5 text-sm font-semibold tracking-[0.22em] text-white/86">
+							查看仓库
 						</p>
 					</div>
 				</div>
