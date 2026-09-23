@@ -48,7 +48,7 @@
 @media (max-width: 900px) { .portfolio-wall { columns: 2; } }
 @media (max-width: 900px) { .type-profile .layout { flex-direction: column; } }
 @media (max-width: 600px) { .portfolio-wall { columns: 1; } .work-categories span { font-size: 1.5rem; } #motion-toggle { bottom: 12px; left: 10px; } }
-@media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+@media (prefers-reduced-motion: reduce) { html:not([data-motion="on"]) *, html:not([data-motion="on"]) *::before, html:not([data-motion="on"]) *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
 
 /* Home: an editorial, illustration-free front door. */
 #page-header.full_page {
@@ -178,7 +178,8 @@
 #page-header.full_page #scroll-down .scroll-down-effects { color: #688396; animation: scroll-nudge 1.8s ease-in-out infinite; }
 .scroll-label { font-size: .58rem; font-weight: 700; letter-spacing: .2em; opacity: .74; }
 
-#scene { z-index: 1; position: absolute; inset: 0 auto auto 0; pointer-events: none; }
+#scene { z-index: 1; position: absolute; inset: 0 auto auto 0; opacity: .92; mix-blend-mode: multiply; pointer-events: none; }
+#ambient-scene { z-index: 0; position: fixed; inset: 0; width: 100%; height: 100%; opacity: .23; mix-blend-mode: multiply; pointer-events: none; }
 #sparkles { z-index: 9998; position: fixed; inset: 0; pointer-events: none; }
 #cursor-orbit {
   z-index: 9997;
@@ -264,6 +265,8 @@
 [data-theme="dark"] #recent-posts > .recent-post-items > .recent-post-item { border-color: rgba(218, 230, 241, .08); background: rgba(27, 33, 42, .88); }
 [data-theme="dark"] #recent-posts .recent-post-info .content { color: #acb9c5; }
 [data-theme="dark"] #cursor-orbit { border-color: rgba(171, 204, 222, .48); background: rgba(34, 48, 60, .28); }
+[data-theme="dark"] #page-header.full_page #scene { opacity: .86; mix-blend-mode: screen; }
+[data-theme="dark"] #ambient-scene { opacity: .28; mix-blend-mode: screen; }
 
 @keyframes ambient-drift { from { transform: translate3d(-1.5%, -1%, 0) scale(1); } to { transform: translate3d(1.5%, 1%, 0) scale(1.05); } }
 @keyframes hero-arrive { from { opacity: 0; translate: 0 18px; } to { opacity: 1; translate: 0 0; } }
@@ -287,4 +290,5 @@
   .feed-heading { gap: 5px 10px; }
   .feed-heading > a { font-size: .76rem; }
 }
-@media (pointer: coarse), (prefers-reduced-motion: reduce) { #cursor-orbit { display: none !important; } }
+@media (pointer: coarse) { #cursor-orbit { display: none !important; } }
+@media (prefers-reduced-motion: reduce) { html:not([data-motion="on"]) #cursor-orbit { display: none !important; } }
