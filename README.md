@@ -39,7 +39,7 @@ Windows 默认使用已安装的 Microsoft Edge；GitHub Actions 安装 Chromium
 
 ## 迁移与来源
 Astro/Fuwari 已移除；迁移前最后一个版本是 Git 提交 `c53d964`，可从历史取回旧文件。
-8 篇文章只转换 Front Matter，正文保持原样。
+首批迁移的 8 篇笔记保留原有知识主干，并逐篇补充了学习路线、讲解案例、易错点或复习练习；后续新增与修订内容以 `source/_posts/` 为准。
 参考站：https://www.taozhiyy.top/blog/ 。其公开仓库只有生成网页，未找到授权许可证，未复制它的文章、图片、密钥或统计服务。
 使用官方 Apache-2.0 授权的 Butterfly，保留页脚主题与框架署名。动态背景为本站独立实现，非逐像素复制。
 原 Fuwari 的 MIT 许可证仍保留在 LICENSE，其他依赖许可证见各 npm 包及发布的 vendor 目录。

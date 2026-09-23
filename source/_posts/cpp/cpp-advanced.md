@@ -8425,5 +8425,82 @@ int main() {
 - 目标容器开辟空间需要从**两个容器取较大值**
 - set_difference返回值既是差集中最后一个元素的位置
 
+## 把零散的 STL 知识串成一次完整处理
+
+学模板和 STL 时很容易记住许多函数，却不知道如何组合。下面用“统计单词频率并按频率排序”把容器、迭代器、算法和 lambda 连起来：
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <unordered_map>
+#include <utility>
+#include <vector>
+
+int main() {
+    std::vector<std::string> words{"tree", "queue", "tree", "stack", "queue", "tree"};
+    std::unordered_map<std::string, int> frequency;
+
+    for (const auto& word : words) {
+        ++frequency[word];
+    }
+
+    std::vector<std::pair<std::string, int>> result(frequency.begin(), frequency.end());
+    std::sort(result.begin(), result.end(), [](const std::pair<std::string, int>& left,
+                                               const std::pair<std::string, int>& right) {
+        if (left.second != right.second) return left.second > right.second;
+        return left.first < right.first;
+    });
+
+    for (const auto& item : result) {
+        std::cout << item.first << ": " << item.second << '\n';
+    }
+}
+```
+
+这里哈希表负责聚合频率，`vector` 提供可排序的连续范围，`sort` 接收 lambda 作为排序规则。哈希表本身不保证遍历顺序，所以先复制到 `vector` 再排序；比较器先按次数降序，次数相同再按单词升序，保证输出可预测。此版本只使用 C++11 已支持的功能；较新的 C++ 也可以用结构化绑定简化 `item.first` 和 `item.second`。
+
+## 模板报错时，先拆小再泛化
+
+模板把类型作为参数，带来复用，也会让编译错误变长。排查时可以按顺序问：
+
+1. 用一个具体类型写出的普通版本是否正确？
+2. 模板中的类型 `T` 实际需要支持哪些操作？例如比较、复制还是加法？
+3. 调用点的参数类型是否与模板推导预期一致？是否出现 `const`、引用或整型提升差异？
+4. 错误发生在模板定义处，还是模板实例化时？编译器往往会指出具体实例化链。
+5. 能否先减少模板参数和函数体，做出最小复现？
+
+不要为了“泛型”而过度抽象。如果一段逻辑只会服务一种类型，而且抽象让接口更难理解，普通函数往往更清楚。模板的目标是表达可复用的约束，不是把所有代码都包装成模板。
+
+## 迭代器失效和算法前置条件
+
+提高阶段的 bug 常来自“代码看起来合理，但前置条件被破坏”。对容器遍历并删除元素时，要使用容器 `erase` 返回的下一个有效迭代器；对 `vector` 扩容、插入或擦除后，不要继续使用可能失效的引用和迭代器；调用 `lower_bound`、集合算法前，确认区间已按一致的比较规则排序。
+
+例如 `std::set_union`、`set_intersection`、`set_difference` 的输入范围都应有序，输出迭代器也必须指向足够大的目标空间。本文的示例通过 `resize` 预留目标元素位置，这和只调用 `reserve` 不同：`reserve` 增加容量但不增加可写元素数量，不能直接把 `begin()` 当成已经存在的输出区间。
+
+## 复杂度速记不是背答案
+
+| 操作 | 常见复杂度 | 还要注意什么 |
+| --- | --- | --- |
+| `vector` 尾部 `push_back` | 摊还 O(1) | 扩容那一次可能搬迁元素 |
+| `vector` 中间插入/擦除 | O(n) | 后续元素需要移动 |
+| `map` 查找/插入/删除 | O(log n) | 保持键有序，迭代器规则稳定 |
+| `unordered_map` 查找 | 平均 O(1) | 最坏情况可退化，遍历无序 |
+| `sort` | O(n log n) | 要求随机访问迭代器和严格弱序比较器 |
+| `find` | O(n) | 对有序范围可考虑 `binary_search` 等算法 |
+
+复杂度应当对应具体操作和前提。比如 `vector::push_back` 常数时间是摊还结论，不代表每一次扩容都只做常数工作；哈希容器的平均 O(1) 也不是所有输入下的保证。分析程序时先说清楚 n 是什么、操作做了多少次，再套用结论。
+
+## 一条更稳的进阶练习路线
+
+1. 用 `vector` 和 `sort` 写一份成绩排名，加入自定义比较规则和并列分数测试。
+2. 用 `map`/`unordered_map` 统计词频，并说明输出顺序差别。
+3. 为一个函数写函数模板，明确它要求类型支持的操作；再比较类模板的职责。
+4. 阅读标准库算法的参数和返回值，尤其是范围、比较器和输出迭代器。
+5. 给容器插入/删除操作加小测试，验证迭代器是否仍有效。
+6. 对“优化后的版本”做简单计时，并确认结果一致，而不是只凭直觉判断快慢。
+
+提高编程不是把语法变复杂，而是开始对抽象边界、可复用性、复杂度和失效规则负责。每当一段模板代码让你困惑，先退回一个具体例子；等具体版本能解释清楚，再把共同部分抽象出来。
+
 
 
