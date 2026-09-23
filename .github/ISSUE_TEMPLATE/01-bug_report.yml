@@ -2,14 +2,11 @@ name: Bug Report
 description: Create a report to help us improve
 title: "[Bug]: "
 labels: ["bug"]
-assignees:
-  - L4Ph
-  - saicaca
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report!
+        Thanks for helping improve the SolskjaerSYSU blog.
   - type: textarea
     id: bug-description
     attributes:

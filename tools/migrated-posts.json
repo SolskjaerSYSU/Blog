@@ -1,0 +1,34 @@
+[
+  {
+    "slug": "cpp/cpp-advanced",
+    "draft": false
+  },
+  {
+    "slug": "cpp/cpp-basics",
+    "draft": false
+  },
+  {
+    "slug": "cpp/cpp-learning-journey",
+    "draft": false
+  },
+  {
+    "slug": "cpp/stl",
+    "draft": false
+  },
+  {
+    "slug": "data-structure/linear-list",
+    "draft": false
+  },
+  {
+    "slug": "data-structure/queue",
+    "draft": false
+  },
+  {
+    "slug": "data-structure/stack",
+    "draft": false
+  },
+  {
+    "slug": "data-structure/tree",
+    "draft": false
+  }
+]

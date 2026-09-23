@@ -1,11 +1,18 @@
 # build output
 dist/
+.reference-blog/
+db.json
+source/media/
+source/vendor/
+source/_data/media.json
+.deploy_git/
 
 # generated types
 .astro/
 
 # dependencies
 node_modules/
+.pnpm-store/
 
 # logs
 npm-debug.log*

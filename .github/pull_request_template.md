@@ -7,10 +7,9 @@
 
 ## Checklist
 
-- [ ] I have read the [**CONTRIBUTING**](https://github.com/saicaca/fuwari/blob/main/CONTRIBUTING.md) document.
-- [ ] I have checked to ensure that this Pull Request is not for personal changes.
-- [ ] I have performed a self-review of my own code.
-- [ ] My changes generate no new warnings.
+- [ ] I have performed a self-review of my changes.
+- [ ] `pnpm build` passes.
+- [ ] `pnpm test:browser` passes for layout or interaction changes.
 
 ## Related Issue
 
@@ -24,7 +23,7 @@
 
 ## How To Test
 
-<!-- Please describe how you tested your changes. -->
+<!-- Describe the commands and checks used to verify your changes. -->
 
 
 ## Screenshots (if applicable)

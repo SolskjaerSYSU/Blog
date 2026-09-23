@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /Blog/
+Sitemap: https://solskjaersysu.github.io/Blog/sitemap.xml

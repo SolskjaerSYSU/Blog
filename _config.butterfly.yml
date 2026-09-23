@@ -1,0 +1,136 @@
+nav:
+  fixed: true
+  display_title: true
+menu:
+  首页: / || fas fa-home
+  归档: /archives/ || fas fa-archive
+  标签: /tags/ || fas fa-tags
+  分类: /categories/ || fas fa-folder-open
+  作品: /artworks/ || fas fa-images
+  随笔: /essays/ || fas fa-pen-nib
+  关于我: /about/ || fas fa-user
+social:
+  fab fa-github: https://github.com/SolskjaerSYSU || GitHub
+  fas fa-rss: /rss.xml || RSS
+favicon: /favicon/favicon-light-32.png
+avatar:
+  img: /media/avatar.webp
+  effect: false
+disable_top_img: false
+index_img: /media/banner1.webp
+default_top_img: /media/DSC_1724.webp
+archive_img: /media/banner1.webp
+index_top_img_height: 100vh
+background: '#f7f9fe'
+footer_img: false
+cover:
+  index_enable: true
+  aside_enable: true
+  archives_enable: true
+  default_cover: /media/banner1.webp
+subtitle:
+  enable: true
+  effect: true
+  source: false
+  sub:
+    - Postscriptum ad infinitum
+    - 用代码探索，用镜头记录，用文字思考。
+index_layout: 3
+index_post_content:
+  method: 2
+  length: 180
+code_blocks:
+  theme: darker
+  macStyle: true
+  word_wrap: true
+  copy: true
+  language: true
+  shrink: false
+toc:
+  post: true
+  page: false
+  number: true
+  expand: true
+  scroll_percent: true
+aside:
+  enable: true
+  position: right
+  mobile: true
+  button: true
+  card_author:
+    enable: true
+    description: 记录 C++、数据结构、摄影、绘画与日常思考。
+    button:
+      enable: true
+      icon: fab fa-github
+      text: GitHub
+      link: https://github.com/SolskjaerSYSU
+  card_announcement:
+    enable: true
+    content: 欢迎来到我的博客！这里收藏学习笔记、创作与生活的片段。
+  card_webinfo:
+    runtime_date: 4/18/2026 00:00:00
+search:
+  use: local_search
+  placeholder: 搜索笔记
+  local_search:
+    preload: false
+    top_n_per_article: 2
+    unescape: true
+    pagination:
+      enable: true
+      hitsPerPage: 8
+lightbox: medium_zoom
+lazyload:
+  enable: false
+pjax:
+  enable: false
+share:
+  use:
+comments:
+  use:
+busuanzi:
+  site_uv: false
+  site_pv: false
+  page_pv: false
+snackbar:
+  enable: false
+darkmode:
+  enable: true
+  button: true
+  autoChangeMode: 1
+readmode: true
+rightside_scroll_percent: true
+rounded_corners_ui: true
+enter_transitions: true
+theme_color:
+  enable: true
+  main: '#49b1f5'
+  paginator: '#00c4b6'
+  button_hover: '#ff7242'
+footer:
+  owner:
+    enable: true
+    since: 2026
+  copyright:
+    enable: true
+    version: true
+  custom_text: Postscriptum ad infinitum
+error_404:
+  enable: true
+  subtitle: 页面没有找到
+  background: /media/banner1.webp
+CDN:
+  internal_provider: local
+  third_party_provider: jsdelivr
+  version: true
+  option:
+    fontawesome: /vendor/@fortawesome/fontawesome-free/css/all.min.css
+    medium_zoom: /vendor/medium-zoom/dist/medium-zoom.min.js
+    typed: /vendor/typed.js/dist/typed.umd.js
+inject:
+  head:
+    - <link rel="stylesheet" href="/Blog/css/custom.css">
+  bottom:
+    - <script src="/Blog/js/effects.js" defer></script>
+    - <script src="/Blog/js/gallery.js" defer></script>

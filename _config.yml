@@ -1,0 +1,55 @@
+title: SolskjaerSYSU
+subtitle: Postscriptum ad infinitum
+description: 记录 C++、数据结构、摄影、绘画与日常思考。
+author: SolskjaerSYSU
+language: zh-CN
+timezone: Asia/Shanghai
+url: https://solskjaersysu.github.io/Blog
+root: /Blog/
+permalink: posts/:title/
+pretty_urls:
+  trailing_index: false
+  trailing_html: false
+source_dir: source
+public_dir: dist
+tag_dir: tags
+archive_dir: archives
+category_dir: categories
+category_map:
+  C++: cpp
+tag_map:
+  C++: cpp
+default_layout: post
+new_post_name: :title.md
+render_drafts: false
+future: false
+theme: butterfly
+index_generator:
+  path: ''
+  per_page: 8
+  order_by: -date
+per_page: 8
+highlight:
+  enable: true
+  line_number: true
+  auto_detect: false
+  tab_replace: '  '
+  wrap: true
+prismjs:
+  enable: false
+markdown:
+  render:
+    html: true
+    linkify: true
+    breaks: false
+  plugins: []
+search:
+  path: search.xml
+  field: post
+  content: true
+feed:
+  type: atom
+  path: rss.xml
+  limit: 20
+sitemap:
+  path: sitemap.xml

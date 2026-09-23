@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy Hexo to GitHub Pages
 
 on:
   push:
@@ -39,8 +39,16 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build site
+      - name: Generate Hexo site and validate links
         run: pnpm build
+
+      - name: Install test browser
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Verify browser layouts before publishing
+        run: pnpm test:browser
+        env:
+          BROWSER_CHANNEL: chromium
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

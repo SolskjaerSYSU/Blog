@@ -2,13 +2,11 @@ name: Feature Request
 description: Suggest an idea for this project
 title: "[Feature]: "
 labels: ["enhancement"]
-assignees:
-  - saicaca
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this feature request!
+        Thanks for helping improve the SolskjaerSYSU blog.
   - type: textarea
     id: related-problem
     attributes:
@@ -38,4 +36,4 @@ body:
       value: |
         **Disclaimer**
 
-        Please note that this feature request is at the discretion of the repository owner, @saicaca, and its implementation is not guaranteed.
+        Feature requests are reviewed by the repository maintainer. Implementation depends on project priorities.
