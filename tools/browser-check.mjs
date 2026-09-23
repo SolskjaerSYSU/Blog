@@ -22,7 +22,15 @@ try {
   };
   await visit('');
   assert.equal(await page.locator('#page-header').evaluate(e => e.clientHeight), 900);
+  assert.equal(await page.locator('.hero-links a').count(), 3, 'Homepage should show three content shortcuts');
+  assert(await page.locator('#recent-posts .feed-heading').count(), 'Homepage should label the recent-notes section');
+  const heroBackground = await page.locator('#page-header').evaluate(e => getComputedStyle(e).backgroundImage);
+  assert(heroBackground.includes('home-ambient.svg'), 'Homepage should use the abstract illustration instead of a photo');
+  assert(!heroBackground.includes('banner1.webp'), 'Personal photography must not be used as the homepage hero');
   assert.equal(await page.locator('.recent-post-item').count(), Math.min(posts.length, 8));
+  await page.mouse.move(720, 450);
+  await page.waitForTimeout(100);
+  assert(await page.locator('#cursor-orbit').isVisible(), 'Desktop should show the subtle cursor follower');
   if (process.env.SCREENSHOT_DIR) {
     await mkdir(process.env.SCREENSHOT_DIR, { recursive: true });
     await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/hexo-home-hero.png` });

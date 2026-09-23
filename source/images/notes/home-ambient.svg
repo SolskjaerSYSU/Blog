@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" fill="none">
+  <defs>
+    <linearGradient id="base" x1="100" y1="40" x2="1490" y2="960" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f8fbff"/>
+      <stop offset=".54" stop-color="#f5f8ff"/>
+      <stop offset="1" stop-color="#fbf8f4"/>
+    </linearGradient>
+    <radialGradient id="mistA" cx="0" cy="0" r="1" gradientTransform="matrix(570 355 -235 378 370 260)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#b9ddf0" stop-opacity=".42"/>
+      <stop offset="1" stop-color="#c4e2f4" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="mistB" cx="0" cy="0" r="1" gradientTransform="matrix(495 275 -194 349 1270 720)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ead5e4" stop-opacity=".3"/>
+      <stop offset="1" stop-color="#ead5e4" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M64 0H0v64" stroke="#799bb5" stroke-opacity=".09"/>
+      <circle cx="1" cy="1" r="1.3" fill="#648ba9" fill-opacity=".2"/>
+    </pattern>
+  </defs>
+  <path fill="url(#base)" d="M0 0h1600v1000H0z"/>
+  <path fill="url(#mistA)" d="M0 0h1600v1000H0z"/>
+  <path fill="url(#mistB)" d="M0 0h1600v1000H0z"/>
+  <path fill="url(#grid)" d="M0 0h1600v1000H0z"/>
+  <g stroke="#7598b8" stroke-opacity=".18">
+    <path d="M170 730 395 585l152 101 210-258 175 121 195-173 286 130"/>
+    <path d="m395 585 43-174 109 275m210-258-39-193 214 314m-39-193 134-188 61 361"/>
+  </g>
+  <g fill="#648ba9" fill-opacity=".38">
+    <circle cx="170" cy="730" r="3"/><circle cx="395" cy="585" r="3"/><circle cx="547" cy="686" r="3"/>
+    <circle cx="757" cy="428" r="3"/><circle cx="932" cy="549" r="3"/><circle cx="1127" cy="376" r="3"/>
+    <circle cx="1413" cy="506" r="3"/><circle cx="438" cy="411" r="3"/><circle cx="718" cy="235" r="3"/>
+    <circle cx="1061" cy="188" r="3"/>
+  </g>
+</svg>

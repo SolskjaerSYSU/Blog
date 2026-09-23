@@ -17,10 +17,10 @@ avatar:
   img: /media/avatar.webp
   effect: false
 disable_top_img: false
-index_img: /media/banner1.webp
+index_img: /images/notes/home-ambient.svg
 default_top_img: /media/DSC_1724.webp
 archive_img: /media/banner1.webp
-index_top_img_height: 100vh
+index_top_img_height: 100svh
 background: '#f7f9fe'
 footer_img: false
 cover:
