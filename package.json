@@ -21,7 +21,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "7.3.1",
     "hexo": "8.1.2",
-    "hexo-util": "4.0.0",
+    "hexo-butterfly-extjs": "^1.5.8",
     "hexo-generator-archive": "2.0.0",
     "hexo-generator-category": "2.0.0",
     "hexo-generator-feed": "3.0.0",
@@ -34,6 +34,7 @@
     "hexo-renderer-stylus": "3.0.1",
     "hexo-server": "3.0.0",
     "hexo-theme-butterfly": "5.7.0",
+    "hexo-util": "4.0.0",
     "medium-zoom": "1.1.0",
     "moment-timezone": "0.6.4",
     "sharp": "0.34.5",

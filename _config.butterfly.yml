@@ -22,6 +22,34 @@ default_top_img: /media/DSC_1724.webp
 archive_img: /media/banner1.webp
 index_top_img_height: 100svh
 background: '#f9fbfd'
+# Background effects (script files are served locally through hexo-butterfly-extjs)
+# Reference settings from https://bistutzyy.github.io (Butterfly 5.5.4); only mobile is off by choice.
+canvas_nest:
+  enable: true
+  color: '0,0,255'
+  opacity: 0.7
+  zIndex: -1
+  count: 99
+  mobile: false
+canvas_ribbon:
+  enable: true
+  size: 150
+  alpha: 0.6
+  zIndex: -1
+  click_to_change: false
+  mobile: false
+canvas_fluttering_ribbon:
+  enable: true
+  mobile: false
+fireworks:
+  enable: true
+  zIndex: 9999
+  mobile: false
+activate_power_mode:
+  enable: true
+  colorful: true
+  shake: true
+  mobile: false
 footer_img: false
 cover:
   index_enable: true
@@ -122,7 +150,7 @@ error_404:
   background: /media/banner1.webp
 CDN:
   internal_provider: local
-  third_party_provider: jsdelivr
+  third_party_provider: local
   version: true
   option:
     fontawesome: /vendor/@fortawesome/fontawesome-free/css/all.min.css
@@ -132,5 +160,5 @@ inject:
   head:
     - <link rel="stylesheet" href="/Blog/css/custom.css">
   bottom:
-    - <script src="/Blog/js/effects.js" defer></script>
+    - <script src="/Blog/js/hero.js" defer></script>
     - <script src="/Blog/js/gallery.js" defer></script>

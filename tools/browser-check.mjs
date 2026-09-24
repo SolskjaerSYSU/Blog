@@ -28,31 +28,23 @@ try {
   assert(heroBackground.includes('home-ambient.svg'), 'Homepage should use the abstract illustration instead of a photo');
   assert(!heroBackground.includes('banner1.webp'), 'Personal photography must not be used as the homepage hero');
   assert.equal(await page.locator('.recent-post-item').count(), Math.min(posts.length, 8));
-  const scene = page.locator('#scene');
-  const firstFrame = await scene.evaluate(canvas => canvas.toDataURL());
+  const canvasFrames = () => page.evaluate(() => [...document.querySelectorAll('canvas')]
+    .filter(canvas => getComputedStyle(canvas).zIndex === '-1')
+    .map(canvas => canvas.toDataURL()));
+  const effectsBefore = await canvasFrames();
+  assert.equal(effectsBefore.length, 3, 'Theme canvas_nest/ribbon/fluttering layers should be active');
+  assert.equal(await page.locator('canvas.fireworks').count(), 1, 'Theme fireworks canvas should exist');
+  assert(await page.evaluate(() => document.querySelectorAll('script[src*="butterfly-extsrc"]').length >= 5), 'Effect scripts should be served locally');
   await page.waitForTimeout(900);
-  assert.notEqual(await scene.evaluate(canvas => canvas.toDataURL()), firstFrame, 'Hero geometry should animate over time');
-  await page.mouse.move(720, 450);
-  await page.waitForTimeout(100);
-  assert(await page.locator('#cursor-orbit').isVisible(), 'Desktop should show the subtle cursor follower');
-  await page.mouse.move(240, 660);
-  await page.mouse.move(650, 660, { steps: 8 });
-  await page.waitForTimeout(50);
-  assert(await page.locator('#sparkles').evaluate(canvas => {
-    const pixels = canvas.getContext('2d').getImageData(230, 640, 440, 40).data;
-    for (let index = 3; index < pixels.length; index += 4) if (pixels[index]) return true;
-    return false;
-  }), 'Pointer movement should leave a visible trail');
+  const effectsAfter = await canvasFrames();
+  assert(effectsBefore.some((frame, index) => frame !== effectsAfter[index]), 'Theme background canvases should animate over time');
   if (process.env.SCREENSHOT_DIR) {
     await mkdir(process.env.SCREENSHOT_DIR, { recursive: true });
     await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/hexo-home-hero.png` });
   }
   await page.evaluate(() => scrollTo(0, innerHeight + 10));
   await page.waitForTimeout(350);
-  assert(await page.locator('#ambient-scene').isVisible(), 'The article feed should keep its animated geometry');
-  const ambientFrame = await page.locator('#ambient-scene').evaluate(canvas => canvas.toDataURL());
-  await page.waitForTimeout(550);
-  assert.notEqual(await page.locator('#ambient-scene').evaluate(canvas => canvas.toDataURL()), ambientFrame, 'Feed geometry should animate over time');
+  assert.equal((await canvasFrames()).length, 3, 'Theme background canvases should persist while scrolling');
   if (process.env.SCREENSHOT_DIR) {
     await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/hexo-home-feed.png` });
   }
@@ -64,14 +56,11 @@ try {
   await page.waitForURL('**/posts/**');
   assert(await page.locator('#post').evaluate(e => e.clientWidth > 700));
   await visit('posts/data-structure/queue/');
-  assert(await page.locator('#ambient-scene').isVisible(), 'Article pages should keep the site-wide scene');
+  assert.equal((await canvasFrames()).length, 3, 'Article pages should keep the site-wide canvas layers');
   const width = await page.locator('#post').evaluate(e => e.clientWidth);
   assert(width > 700, `Narrow article: ${width}`);
   assert(await page.locator('#article-container figure.highlight').count());
   await page.locator('#post').scrollIntoViewIfNeeded();
-  const articleFrame = await page.locator('#ambient-scene').evaluate(canvas => canvas.toDataURL());
-  await page.waitForTimeout(550);
-  assert.notEqual(await page.locator('#ambient-scene').evaluate(canvas => canvas.toDataURL()), articleFrame, 'Article background should animate after scrolling');
   if (process.env.SCREENSHOT_DIR) await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/hexo-article-body.png` });
   for (const kind of ['photography', 'painting']) {
     const count = media.filter(p => kind === 'painting' ? /^draw\d+$/.test(p.id) : /^(\d+|DSC_1724)$/.test(p.id)).length;
@@ -80,7 +69,7 @@ try {
     assert.equal(await page.locator('#page-header').evaluate(e => e.clientHeight), 900);
     const first = page.locator('.portfolio-wall img').first();
     await first.scrollIntoViewIfNeeded();
-    assert(await page.locator('#ambient-scene').isVisible(), 'Gallery pages should keep the site-wide scene');
+    assert.equal((await canvasFrames()).length, 3, 'Gallery pages should keep the site-wide canvas layers');
     if (kind === 'photography' && process.env.SCREENSHOT_DIR) {
       await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/hexo-gallery-body.png` });
     }
@@ -97,7 +86,7 @@ try {
     assert(await trigger.evaluate(e => e === document.activeElement), 'Lightbox must return keyboard focus');
   }
   await visit('about/');
-  assert(await page.locator('#ambient-scene').isVisible(), 'About should keep the site-wide scene');
+  assert.equal((await canvasFrames()).length, 3, 'About should keep the site-wide canvas layers');
   assert((await page.locator('#article-container').innerText()).includes('INTJ'));
   await page.locator('#darkmode').evaluate(e => e.click());
   await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
@@ -107,25 +96,20 @@ try {
   }
   await page.locator('#darkmode').evaluate(e => e.click());
   await visit('');
-  await page.locator('#motion-toggle').click();
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForTimeout(200);
-  assert.equal(await page.locator('#motion-toggle').getAttribute('aria-pressed'), 'false');
-  assert(await page.locator('#scene').isHidden());
-  assert(await page.locator('#ambient-scene').isHidden());
-  assert(await page.locator('#sparkles').isHidden());
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  assert.equal(await page.locator('#motion-toggle').getAttribute('aria-pressed'), 'false');
-  assert(await page.locator('#scene').isHidden());
-  await page.locator('#motion-toggle').click();
-  assert.equal(await page.locator('#motion-toggle').getAttribute('aria-pressed'), 'true', 'Visitors should be able to opt in to motion');
-  assert(await page.locator('#scene').isVisible());
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  assert.equal(await page.locator('#motion-toggle').getAttribute('aria-pressed'), 'true', 'Motion preference should persist');
+  const mobilePage = await browser.newPage({
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+    viewport: { width: 390, height: 844 },
+    hasTouch: true,
+    isMobile: true,
+  });
+  await mobilePage.goto(base, { waitUntil: 'domcontentloaded' });
+  await mobilePage.waitForTimeout(900);
+  const mobileCanvases = await mobilePage.evaluate(() => [...document.querySelectorAll('canvas')].map(canvas => canvas.className || 'plain'));
+  assert.deepEqual(mobileCanvases, ['fireworks'], 'Canvas effects should stay off on mobile user agents');
+  assert.equal(await mobilePage.locator('.hero-links a').count(), 3, 'Mobile homepage should keep three content shortcuts');
+  await mobilePage.close();
   await page.setViewportSize({ width: 390, height: 844 });
   await visit('');
-  assert(await page.locator('#ambient-scene').isVisible(), 'Mobile should keep the site-wide scene');
   if (process.env.SCREENSHOT_DIR) await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/hexo-home-mobile.png` });
   await visit('posts/data-structure/queue/');
   assert(await page.locator('#post').evaluate(e => e.clientWidth > 330));
@@ -143,7 +127,7 @@ try {
     }
   }
   assert.deepEqual(errors, [], 'Client errors');
-  console.log(`PASS: ${posts.length} posts at 3 viewport widths, search navigation, galleries/keyboard lightbox, About, dark/reduced-motion modes, mobile menu.`);
+  console.log(`PASS: ${posts.length} posts at 3 viewport widths, search navigation, galleries/keyboard lightbox, About, dark mode, theme canvas effects (on desktop, off on mobile), mobile menu.`);
 } finally {
   await browser?.close();
   await preview?.close();
