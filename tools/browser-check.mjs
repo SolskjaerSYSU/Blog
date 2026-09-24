@@ -64,9 +64,15 @@ try {
   await page.waitForURL('**/posts/**');
   assert(await page.locator('#post').evaluate(e => e.clientWidth > 700));
   await visit('posts/data-structure/queue/');
+  assert(await page.locator('#ambient-scene').isVisible(), 'Article pages should keep the site-wide scene');
   const width = await page.locator('#post').evaluate(e => e.clientWidth);
   assert(width > 700, `Narrow article: ${width}`);
   assert(await page.locator('#article-container figure.highlight').count());
+  await page.locator('#post').scrollIntoViewIfNeeded();
+  const articleFrame = await page.locator('#ambient-scene').evaluate(canvas => canvas.toDataURL());
+  await page.waitForTimeout(550);
+  assert.notEqual(await page.locator('#ambient-scene').evaluate(canvas => canvas.toDataURL()), articleFrame, 'Article background should animate after scrolling');
+  if (process.env.SCREENSHOT_DIR) await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/hexo-article-body.png` });
   for (const kind of ['photography', 'painting']) {
     const count = media.filter(p => kind === 'painting' ? /^draw\d+$/.test(p.id) : /^(\d+|DSC_1724)$/.test(p.id)).length;
     await visit(`artworks/${kind}/`);
@@ -74,6 +80,10 @@ try {
     assert.equal(await page.locator('#page-header').evaluate(e => e.clientHeight), 900);
     const first = page.locator('.portfolio-wall img').first();
     await first.scrollIntoViewIfNeeded();
+    assert(await page.locator('#ambient-scene').isVisible(), 'Gallery pages should keep the site-wide scene');
+    if (kind === 'photography' && process.env.SCREENSHOT_DIR) {
+      await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/hexo-gallery-body.png` });
+    }
     await first.click();
     await page.locator('.medium-zoom-overlay').waitFor();
     await page.keyboard.press('Escape');
@@ -87,6 +97,7 @@ try {
     assert(await trigger.evaluate(e => e === document.activeElement), 'Lightbox must return keyboard focus');
   }
   await visit('about/');
+  assert(await page.locator('#ambient-scene').isVisible(), 'About should keep the site-wide scene');
   assert((await page.locator('#article-container').innerText()).includes('INTJ'));
   await page.locator('#darkmode').evaluate(e => e.click());
   await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
@@ -113,6 +124,9 @@ try {
   await page.reload({ waitUntil: 'domcontentloaded' });
   assert.equal(await page.locator('#motion-toggle').getAttribute('aria-pressed'), 'true', 'Motion preference should persist');
   await page.setViewportSize({ width: 390, height: 844 });
+  await visit('');
+  assert(await page.locator('#ambient-scene').isVisible(), 'Mobile should keep the site-wide scene');
+  if (process.env.SCREENSHOT_DIR) await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/hexo-home-mobile.png` });
   await visit('posts/data-structure/queue/');
   assert(await page.locator('#post').evaluate(e => e.clientWidth > 330));
   await visit('artworks/photography/');

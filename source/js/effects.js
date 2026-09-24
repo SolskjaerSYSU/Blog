@@ -1,25 +1,12 @@
 (() => {
   'use strict';
 
-  const hero = document.querySelector('#page-header.full_page');
-  const scene = document.createElement('canvas');
-  const ambient = document.createElement('canvas');
-  const sparks = document.createElement('canvas');
-  const cursor = document.createElement('div');
-  scene.id = 'scene';
-  ambient.id = 'ambient-scene';
-  sparks.id = 'sparkles';
-  cursor.id = 'cursor-orbit';
-  scene.setAttribute('aria-hidden', 'true');
-  ambient.setAttribute('aria-hidden', 'true');
-  sparks.setAttribute('aria-hidden', 'true');
-  cursor.setAttribute('aria-hidden', 'true');
-  if (hero) hero.prepend(scene);
-  document.body.append(ambient, sparks, cursor);
+  const header = document.querySelector('#page-header');
+  const hero = header?.classList.contains('full_page') ? header : null;
+  const root = document.querySelector('.nav-site-title')?.getAttribute('href') || '/Blog/';
 
   if (hero) {
     const info = hero.querySelector('#site-info');
-    const root = document.querySelector('.nav-site-title')?.getAttribute('href') || '/';
     if (info) {
       const kicker = document.createElement('p');
       kicker.className = 'hero-kicker';
@@ -72,214 +59,218 @@
     }
   }
 
-  const ctx = scene.getContext('2d');
-  const background = ambient.getContext('2d');
-  const fx = sparks.getContext('2d');
-  if (!ctx || !background || !fx) return;
-
+  const ambient = document.createElement('canvas');
+  const headerScene = document.createElement('canvas');
+  const sparkCanvas = document.createElement('canvas');
+  const cursor = document.createElement('div');
   const button = document.createElement('button');
+  ambient.id = 'ambient-scene';
+  headerScene.id = 'scene';
+  sparkCanvas.id = 'sparkles';
+  cursor.id = 'cursor-orbit';
   button.id = 'motion-toggle';
   button.type = 'button';
-  button.title = '切换几何背景与光标动效';
-  document.body.append(button);
+  button.title = '切换全站背景与光标动效';
+  for (const element of [ambient, headerScene, sparkCanvas, cursor]) element.setAttribute('aria-hidden', 'true');
+  if (header) header.prepend(headerScene);
+  document.body.append(ambient, sparkCanvas, cursor, button);
+
+  const ambientContext = ambient.getContext('2d');
+  const headerContext = headerScene.getContext('2d');
+  const sparkContext = sparkCanvas.getContext('2d');
+  if (!ambientContext || !headerContext || !sparkContext) return;
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
-  const colors = ['#76a8c7', '#cf9eb8', '#84bcb1', '#9ca8d2'];
-  const particles = [];
-  const trail = [];
-  let points = [];
-  let columns = 0;
-  let rows = 0;
-  let width = 0;
-  let height = 0;
-  let dpr = 1;
+  const accents = ['111, 165, 194', '220, 143, 171', '125, 186, 171'];
+  const sparks = [];
+  let nodes = [];
+  let viewportWidth = 0;
+  let viewportHeight = 0;
+  let headerWidth = 0;
+  let headerHeight = 0;
+  let pixelRatio = 1;
   let frame = 0;
-  let last = 0;
+  let lastFrame = 0;
   let preference = null;
   let motionAllowed = false;
-  let pointerInside = false;
-  let hasPointer = false;
-  let pointer = { x: -1000, y: -1000 };
-  let ambientPointer = { x: -1000, y: -1000 };
-  let cursorTarget = { x: -100, y: -100 };
-  let cursorPosition = { x: -100, y: -100 };
+  let pointer = { x: -1000, y: -1000, inside: false };
+  let cursorPosition = { x: -1000, y: -1000 };
+  let lastSpark = { x: -1000, y: -1000 };
 
   try {
     preference = localStorage.getItem('blog-motion');
   } catch {}
 
-  function resize() {
-    const bounds = hero?.getBoundingClientRect();
-    width = bounds?.width || innerWidth;
-    height = bounds?.height || innerHeight;
-    dpr = Math.min(devicePixelRatio || 1, 1.35);
-    scene.width = Math.round(width * dpr);
-    scene.height = Math.round(height * dpr);
-    scene.style.width = `${width}px`;
-    scene.style.height = `${height}px`;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ambient.width = Math.round(innerWidth * dpr);
-    ambient.height = Math.round(innerHeight * dpr);
-    background.setTransform(dpr, 0, 0, dpr, 0, 0);
-    sparks.width = Math.round(innerWidth * dpr);
-    sparks.height = Math.round(innerHeight * dpr);
-    fx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  function sizeCanvas(canvas, context, width, height) {
+    canvas.width = Math.round(width * pixelRatio);
+    canvas.height = Math.round(height * pixelRatio);
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+  }
 
-    columns = Math.max(8, Math.ceil(width / 210) + 1);
-    rows = Math.max(6, Math.ceil(height / 180) + 1);
-    points = Array.from({ length: columns * rows }, (_, index) => {
-      const column = index % columns;
-      const row = Math.floor(index / columns);
-      return {
-        x: column * width / (columns - 1),
-        y: row * height / (rows - 1),
-        phase: index * 2.39996,
-      };
-    });
+  function resize() {
+    viewportWidth = innerWidth;
+    viewportHeight = innerHeight;
+    pixelRatio = Math.min(devicePixelRatio || 1, 1.5);
+    const bounds = header?.getBoundingClientRect();
+    headerWidth = bounds?.width || viewportWidth;
+    headerHeight = bounds?.height || viewportHeight;
+    sizeCanvas(ambient, ambientContext, viewportWidth, viewportHeight);
+    sizeCanvas(headerScene, headerContext, headerWidth, headerHeight);
+    sizeCanvas(sparkCanvas, sparkContext, viewportWidth, viewportHeight);
+
+    const count = viewportWidth < 700 ? 14 : 27;
+    nodes = Array.from({ length: count }, (_, index) => ({
+      x: (index * 0.61803398875 + 0.12) % 1,
+      y: (index * 0.41421356237 + 0.08) % 1,
+      phase: index * 2.17,
+    }));
     sync();
   }
 
-  function drawGeometry(time, target, isAmbient = false) {
+  function paintPolygon(context, coordinates, fill) {
+    context.beginPath();
+    context.moveTo(coordinates[0][0], coordinates[0][1]);
+    for (let index = 1; index < coordinates.length; index++) context.lineTo(coordinates[index][0], coordinates[index][1]);
+    context.closePath();
+    context.fillStyle = fill;
+    context.fill();
+  }
+
+  function paintBackground(context, width, height, time, localPointer, isHeader) {
     const dark = document.documentElement.dataset.theme === 'dark';
-    const activePointer = isAmbient ? ambientPointer : pointer;
-    const pointerActive = isAmbient ? hasPointer : pointerInside;
-    const positions = points.map(point => {
-      const driftX = Math.sin(time * 0.0004 + point.phase) * 29 + Math.cos(time * 0.00023 + point.phase * 0.8) * 15;
-      const driftY = Math.cos(time * 0.00034 + point.phase) * 26 + Math.sin(time * 0.00021 + point.phase * 1.2) * 12;
-      let x = point.x + driftX;
-      let y = point.y + driftY;
-      if (pointerActive) {
-        const dx = x - activePointer.x;
-        const dy = y - activePointer.y;
+    const drift = Math.sin(time * 0.00016) * 0.025;
+    const counter = Math.cos(time * 0.00012) * 0.025;
+    const xy = coordinates => coordinates.map(([x, y]) => [x * width, y * height]);
+
+    // Three broad, unoutlined ribbons leave the center clear for reading.
+    paintPolygon(context, xy([
+      [-0.1, 0.71 + drift], [0.11, 0.62 + counter], [0.39, 0.77 - drift],
+      [0.58, 1.06], [0.37, 0.94], [0.07, 0.82 + drift],
+    ]), dark ? 'rgba(93, 112, 160, .13)' : 'rgba(175, 194, 231, .16)');
+    paintPolygon(context, xy([
+      [1.08, 0.28 - counter], [0.87, 0.42 + drift], [0.63, 0.58],
+      [0.86, 0.54 - counter], [1.08, 0.58],
+    ]), dark ? 'rgba(155, 100, 138, .1)' : 'rgba(235, 169, 190, .17)');
+    paintPolygon(context, xy([
+      [0.29, -0.08], [0.49, 0.08 + counter], [0.74, -0.07],
+    ]), dark ? 'rgba(87, 149, 143, .08)' : 'rgba(161, 211, 199, .11)');
+
+    const positions = nodes.map(node => {
+      let x = node.x * width + Math.sin(time * 0.00024 + node.phase) * 18;
+      let y = node.y * height + Math.cos(time * 0.0002 + node.phase) * 18;
+      if (localPointer.inside) {
+        const dx = x - localPointer.x;
+        const dy = y - localPointer.y;
         const distance = Math.hypot(dx, dy);
-        if (distance < 245 && distance > 0) {
-          const force = Math.pow(1 - distance / 245, 2) * 70;
-          x += dx / distance * force;
-          y += dy / distance * force;
+        if (distance > 0 && distance < 170) {
+          const push = (1 - distance / 170) ** 2 * 35;
+          x += dx / distance * push;
+          y += dy / distance * push;
         }
       }
       return { x, y };
     });
 
-    for (let row = 0; row < rows - 1; row++) {
-      for (let column = 0; column < columns - 1; column++) {
-        const index = row * columns + column;
-        const corners = [positions[index], positions[index + 1], positions[index + columns], positions[index + columns + 1]];
-        const triangles = (row + column) % 2
-          ? [[corners[0], corners[1], corners[2]], [corners[1], corners[3], corners[2]]]
-          : [[corners[0], corners[1], corners[3]], [corners[0], corners[3], corners[2]]];
-        triangles.forEach((triangle, part) => {
-          const accent = (row * 7 + column * 3 + part) % 9 === 0;
-          target.beginPath();
-          target.moveTo(triangle[0].x, triangle[0].y);
-          target.lineTo(triangle[1].x, triangle[1].y);
-          target.lineTo(triangle[2].x, triangle[2].y);
-          target.closePath();
-          target.fillStyle = dark
-            ? accent ? 'rgba(149, 132, 184, .19)' : 'rgba(112, 157, 190, .075)'
-            : accent ? 'rgba(220, 156, 190, .19)' : 'rgba(104, 167, 200, .095)';
-          target.fill();
-          target.strokeStyle = dark ? 'rgba(167, 197, 217, .24)' : 'rgba(82, 140, 173, .28)';
-          target.lineWidth = 0.7;
-          target.stroke();
-        });
+    context.lineWidth = 0.9;
+    for (let index = 0; index < positions.length; index++) {
+      const point = positions[index];
+      const closest = positions.slice(index + 1)
+        .map(other => ({ other, distance: Math.hypot(other.x - point.x, other.y - point.y) }))
+        .filter(candidate => candidate.distance < 280)
+        .sort((left, right) => left.distance - right.distance)
+        .slice(0, 2);
+      for (const { other, distance } of closest) {
+        const opacity = (1 - distance / 280) * (isHeader ? 0.19 : 0.15);
+        context.strokeStyle = dark ? `rgba(173, 199, 216, ${opacity})` : `rgba(103, 151, 180, ${opacity})`;
+        context.beginPath();
+        context.moveTo(point.x, point.y);
+        context.lineTo(other.x, other.y);
+        context.stroke();
       }
+      context.fillStyle = dark ? 'rgba(176, 206, 224, .38)' : 'rgba(102, 153, 181, .36)';
+      context.beginPath();
+      context.arc(point.x, point.y, index % 7 === 0 ? 1.8 : 1.1, 0, Math.PI * 2);
+      context.fill();
     }
 
-    target.fillStyle = dark ? 'rgba(196, 223, 235, .75)' : 'rgba(64, 128, 164, .68)';
-    positions.forEach((point, index) => {
-      if (index % 3 !== 0) return;
-      target.beginPath();
-      target.arc(point.x, point.y, index % 12 === 0 ? 2.1 : 1.35, 0, Math.PI * 2);
-      target.fill();
-    });
-
-    if (pointerActive && !isAmbient) {
-      const glow = target.createRadialGradient(activePointer.x, activePointer.y, 4, activePointer.x, activePointer.y, 235);
-      glow.addColorStop(0, dark ? 'rgba(147, 198, 225, .2)' : 'rgba(82, 165, 206, .2)');
-      glow.addColorStop(1, 'rgba(82, 165, 206, 0)');
-      target.fillStyle = glow;
-      target.fillRect(activePointer.x - 235, activePointer.y - 235, 470, 470);
+    if (localPointer.inside) {
+      const glow = context.createRadialGradient(localPointer.x, localPointer.y, 0, localPointer.x, localPointer.y, 190);
+      glow.addColorStop(0, dark ? 'rgba(125, 174, 204, .12)' : 'rgba(116, 177, 207, .12)');
+      glow.addColorStop(1, 'rgba(116, 177, 207, 0)');
+      context.fillStyle = glow;
+      context.fillRect(localPointer.x - 190, localPointer.y - 190, 380, 380);
     }
   }
 
-  function draw(time) {
-    frame = 0;
-    if (!motionAllowed || document.hidden) return;
-    const bounds = hero?.getBoundingClientRect();
-    const dt = Math.min(time - last || 16, 40);
-    last = time;
-    fx.clearRect(0, 0, innerWidth, innerHeight);
-    if (hero && bounds.bottom > 0 && bounds.top < innerHeight) {
-      ambient.hidden = true;
-      ctx.clearRect(0, 0, width, height);
-      drawGeometry(time, ctx);
-    } else {
-      ambient.hidden = false;
-      background.clearRect(0, 0, innerWidth, innerHeight);
-      drawGeometry(time, background, true);
-    }
-
-    for (let index = trail.length - 1; index >= 0; index--) {
-      trail[index].life -= dt / 340;
-      if (trail[index].life <= 0) trail.splice(index, 1);
-    }
-    fx.lineCap = 'round';
-    for (let index = 1; index < trail.length; index++) {
-      const previous = trail[index - 1];
-      const current = trail[index];
-      fx.strokeStyle = `rgba(72, 157, 190, ${current.life * .55})`;
-      fx.lineWidth = 1 + current.life * 2.2;
-      fx.beginPath();
-      fx.moveTo(previous.x, previous.y);
-      fx.lineTo(current.x, current.y);
-      fx.stroke();
-    }
-
-    for (let index = particles.length - 1; index >= 0; index--) {
-      const particle = particles[index];
-      particle.life -= dt;
-      particle.x += particle.vx * dt;
-      particle.y += particle.vy * dt;
-      particle.vy += 0.00012 * dt;
-      if (particle.life <= 0) {
-        particles.splice(index, 1);
+  function paintSparks(delta) {
+    sparkContext.clearRect(0, 0, viewportWidth, viewportHeight);
+    for (let index = sparks.length - 1; index >= 0; index--) {
+      const spark = sparks[index];
+      spark.life -= delta;
+      if (spark.life <= 0) {
+        sparks.splice(index, 1);
         continue;
       }
-      fx.globalAlpha = particle.life / particle.total;
-      fx.fillStyle = particle.color;
-      fx.beginPath();
-      fx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-      fx.fill();
+      spark.x += spark.vx * delta;
+      spark.y += spark.vy * delta;
+      const opacity = (spark.life / spark.total) * 0.78;
+      sparkContext.fillStyle = `rgba(${spark.color}, ${opacity})`;
+      sparkContext.beginPath();
+      sparkContext.arc(spark.x, spark.y, spark.radius, 0, Math.PI * 2);
+      sparkContext.fill();
     }
-    fx.globalAlpha = 1;
+  }
 
-    cursorPosition.x += (cursorTarget.x - cursorPosition.x) * 0.16;
-    cursorPosition.y += (cursorTarget.y - cursorPosition.y) * 0.16;
+  function animate(time) {
+    frame = 0;
+    if (!motionAllowed || document.hidden) return;
+    const delta = Math.min(time - lastFrame || 16, 40);
+    lastFrame = time;
+    ambientContext.clearRect(0, 0, viewportWidth, viewportHeight);
+    paintBackground(ambientContext, viewportWidth, viewportHeight, time, pointer, false);
+
+    if (header) {
+      const bounds = header.getBoundingClientRect();
+      if (bounds.bottom > 0 && bounds.top < viewportHeight) {
+        headerContext.clearRect(0, 0, headerWidth, headerHeight);
+        const localPointer = {
+          x: pointer.x - bounds.left,
+          y: pointer.y - bounds.top,
+          inside: pointer.inside && pointer.x >= bounds.left && pointer.x <= bounds.right
+            && pointer.y >= bounds.top && pointer.y <= bounds.bottom,
+        };
+        paintBackground(headerContext, headerWidth, headerHeight, time, localPointer, true);
+      }
+    }
+
+    paintSparks(delta);
+    cursorPosition.x += (pointer.x - cursorPosition.x) * 0.24;
+    cursorPosition.y += (pointer.y - cursorPosition.y) * 0.24;
     cursor.style.transform = `translate3d(${cursorPosition.x}px, ${cursorPosition.y}px, 0)`;
-    frame = requestAnimationFrame(draw);
+    frame = requestAnimationFrame(animate);
   }
 
   function sync() {
     if (frame) cancelAnimationFrame(frame);
     frame = 0;
-    last = 0;
+    lastFrame = 0;
     motionAllowed = preference === 'on' || (preference !== 'off' && !reduce.matches);
     document.documentElement.dataset.motion = motionAllowed ? 'on' : 'off';
     button.textContent = motionAllowed ? '✧ 关闭动效' : '✧ 开启动效';
     button.setAttribute('aria-pressed', String(motionAllowed));
-    scene.hidden = !hero || !motionAllowed;
     ambient.hidden = !motionAllowed;
-    sparks.hidden = !motionAllowed;
-    cursor.hidden = !motionAllowed || !finePointer.matches;
-    if (motionAllowed && !document.hidden) frame = requestAnimationFrame(draw);
+    headerScene.hidden = !motionAllowed || !header;
+    sparkCanvas.hidden = !motionAllowed;
+    cursor.hidden = !motionAllowed || !finePointer.matches || !pointer.inside;
+    if (motionAllowed && !document.hidden) frame = requestAnimationFrame(animate);
     else {
-      particles.length = 0;
-      trail.length = 0;
-      ctx.clearRect(0, 0, width, height);
-      background.clearRect(0, 0, innerWidth, innerHeight);
-      fx.clearRect(0, 0, innerWidth, innerHeight);
+      sparks.length = 0;
+      ambientContext.clearRect(0, 0, viewportWidth, viewportHeight);
+      headerContext.clearRect(0, 0, headerWidth, headerHeight);
+      sparkContext.clearRect(0, 0, viewportWidth, viewportHeight);
     }
   }
 
@@ -292,58 +283,50 @@
   });
 
   document.addEventListener('pointermove', event => {
-    cursorTarget = { x: event.clientX - 16, y: event.clientY - 16 };
-    ambientPointer = { x: event.clientX, y: event.clientY };
-    if (!hasPointer) {
-      cursorPosition = { ...cursorTarget };
-      hasPointer = true;
-    }
-    cursor.hidden = !motionAllowed || !finePointer.matches;
+    if (!pointer.inside) cursorPosition = { x: event.clientX, y: event.clientY };
+    pointer = { x: event.clientX, y: event.clientY, inside: true };
+    cursor.hidden = !motionAllowed || !finePointer.matches || event.pointerType === 'touch';
     cursor.classList.toggle('is-interactive', Boolean(event.target.closest('a, button, input, [role="button"]')));
-    if (motionAllowed && finePointer.matches && event.pointerType !== 'touch') {
-      const previous = trail.at(-1);
-      if (!previous || Math.hypot(previous.x - event.clientX, previous.y - event.clientY) > 7) {
-        trail.push({ x: event.clientX, y: event.clientY, life: 1 });
-        if (trail.length > 22) trail.shift();
-      }
-    }
-    if (!hero) return;
-    const bounds = hero.getBoundingClientRect();
-    pointer = { x: event.clientX - bounds.left, y: event.clientY - bounds.top };
-    pointerInside = pointer.x >= 0 && pointer.y >= 0 && pointer.x <= width && pointer.y <= height;
+    if (!motionAllowed || !finePointer.matches || event.pointerType === 'touch') return;
+    if (Math.hypot(event.clientX - lastSpark.x, event.clientY - lastSpark.y) < 13) return;
+    lastSpark = { x: event.clientX, y: event.clientY };
+    sparks.push({
+      x: event.clientX,
+      y: event.clientY,
+      vx: (Math.random() - 0.5) * 0.055,
+      vy: -0.025 - Math.random() * 0.045,
+      life: 390,
+      total: 390,
+      radius: 1.3 + Math.random() * 1.2,
+      color: accents[sparks.length % accents.length],
+    });
+    if (sparks.length > 70) sparks.shift();
   }, { passive: true });
 
   document.addEventListener('pointerleave', () => {
-    pointerInside = false;
-    hasPointer = false;
+    pointer.inside = false;
     cursor.hidden = true;
-    trail.length = 0;
   });
 
   document.addEventListener('click', event => {
     if (!motionAllowed || !event.detail || event.target.closest('#motion-toggle')) return;
-    const count = innerWidth < 700 ? 10 : 16;
-    for (let index = 0; index < count && particles.length < 120; index++) {
-      const angle = Math.PI * 2 * index / count;
-      const speed = 0.045 + Math.random() * 0.075;
-      const life = 450 + Math.random() * 300;
-      particles.push({
+    for (let index = 0; index < 11; index++) {
+      const angle = index / 11 * Math.PI * 2;
+      const speed = 0.07 + Math.random() * 0.045;
+      sparks.push({
         x: event.clientX,
         y: event.clientY,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
-        life,
-        total: life,
-        color: colors[index % colors.length],
-        radius: 1 + Math.random() * 1.6,
+        life: 480,
+        total: 480,
+        radius: 1.2 + Math.random() * 1.3,
+        color: accents[index % accents.length],
       });
     }
   });
 
   window.addEventListener('resize', resize);
-  window.addEventListener('scroll', () => {
-    if (!frame && motionAllowed && !document.hidden) frame = requestAnimationFrame(draw);
-  }, { passive: true });
   window.addEventListener('pageshow', sync);
   document.addEventListener('visibilitychange', sync);
   reduce.addEventListener('change', sync);
