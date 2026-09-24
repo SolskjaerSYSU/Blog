@@ -25,8 +25,16 @@ try {
   assert.equal(await page.locator('.hero-links a').count(), 3, 'Homepage should show three content shortcuts');
   assert(await page.locator('#recent-posts .feed-heading').count(), 'Homepage should label the recent-notes section');
   const heroBackground = await page.locator('#page-header').evaluate(e => getComputedStyle(e).backgroundImage);
-  assert(heroBackground.includes('home-ambient.svg'), 'Homepage should use the abstract illustration instead of a photo');
-  assert(!heroBackground.includes('banner1.webp'), 'Personal photography must not be used as the homepage hero');
+  assert.equal(heroBackground, 'none', 'Hero should stay transparent so the theme canvases show through');
+  const heroBackdrop = await page.locator('#page-header').evaluate(e => {
+    const before = getComputedStyle(e, '::before');
+    return { image: before.backgroundImage, opacity: Number(before.opacity), animation: before.animationName, color: getComputedStyle(e).backgroundColor };
+  });
+  assert(heroBackdrop.image.includes('home-ambient.svg'), 'Hero backdrop should keep the abstract illustration');
+  assert(!heroBackdrop.image.includes('banner1.webp'), 'Personal photography must not be used as the homepage hero');
+  assert(heroBackdrop.opacity < .8, `Hero backdrop should be translucent, got ${heroBackdrop.opacity}`);
+  assert(heroBackdrop.animation.includes('hero-drift'), 'Hero backdrop should drift slowly');
+  assert.equal(heroBackdrop.color, 'rgba(0, 0, 0, 0)', `Hero background should be transparent, got ${heroBackdrop.color}`);
   assert.equal(await page.locator('.recent-post-item').count(), Math.min(posts.length, 8));
   const canvasFrames = () => page.evaluate(() => [...document.querySelectorAll('canvas')]
     .filter(canvas => getComputedStyle(canvas).zIndex === '-1')
@@ -41,6 +49,10 @@ try {
   if (process.env.SCREENSHOT_DIR) {
     await mkdir(process.env.SCREENSHOT_DIR, { recursive: true });
     await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/hexo-home-hero.png` });
+    await page.evaluate(() => scrollTo(0, innerHeight / 2));
+    await page.waitForTimeout(250);
+    await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/hexo-home-scroll-mid.png` });
+    await page.evaluate(() => scrollTo(0, 0));
   }
   await page.evaluate(() => scrollTo(0, innerHeight + 10));
   await page.waitForTimeout(350);

@@ -44,27 +44,35 @@
 @media (max-width: 900px) { .type-profile .layout { flex-direction: column; } }
 @media (max-width: 600px) { .portfolio-wall { columns: 1; } .work-categories span { font-size: 1.5rem; } }
 
-/* Home: a quiet front door; ambient motion now comes from the theme canvas effects. */
+/* Home: a quiet front door; the theme canvases stay visible through the hero so motion is continuous. */
 #page-header.full_page {
   position: relative;
   z-index: 2;
   isolation: isolate;
   overflow: hidden;
   color: #1d3043;
-  background-color: #f9fbfd;
-  background-image: url('/Blog/images/notes/home-ambient.svg') !important;
-  background-size: cover;
+  background-color: transparent;
+  background-image: none !important;
 }
-#page-header.full_page::before { display: none; }
+#page-header.full_page::before {
+  position: absolute;
+  content: '';
+  pointer-events: none;
+  z-index: 0;
+  inset: 0;
+  background: url('/Blog/images/notes/home-ambient.svg') center / cover no-repeat;
+  opacity: .5;
+  -webkit-mask-image: linear-gradient(180deg, #000 42%, transparent 96%);
+  mask-image: linear-gradient(180deg, #000 42%, transparent 96%);
+  animation: hero-drift 56s ease-in-out infinite alternate;
+}
 #page-header.full_page::after {
   position: absolute;
   content: '';
   pointer-events: none;
-}
-#page-header.full_page::after {
   z-index: 0;
   inset: 0;
-  background: linear-gradient(180deg, rgba(249, 251, 255, .08), transparent 60%, rgba(249, 251, 255, .28));
+  background: linear-gradient(180deg, rgba(249, 251, 255, .32), rgba(249, 251, 255, .14) 34%, rgba(249, 251, 255, 0) 62%);
 }
 #page-header.full_page #nav {
   z-index: 5;
@@ -153,6 +161,9 @@
 }
 .hero-links a span { color: #84a4b7; font-size: .64rem; letter-spacing: .08em; }
 .hero-links a i { color: #72a9b9; font-size: .72rem; font-style: normal; }
+#page-header.full_page #site_social_icons { margin-top: 4px; }
+#page-header.full_page #site_social_icons a { color: #5b7d94; text-shadow: none; transition: color .2s ease; }
+#page-header.full_page #site_social_icons a:hover { color: #167e9b; }
 #page-header.full_page #scroll-down {
   z-index: 2;
   bottom: 22px;
@@ -196,10 +207,14 @@
 
 [data-theme="dark"] #page-header.full_page {
   color: #e6edf4;
-  background-color: #141a22;
-  background-image: radial-gradient(ellipse at 25% 34%, rgba(52, 100, 132, .24), transparent 42%), radial-gradient(ellipse at 78% 70%, rgba(111, 70, 109, .18), transparent 38%), linear-gradient(145deg, #171f2a, #20212b) !important;
+  background-color: transparent;
+  background-image: none !important;
 }
-[data-theme="dark"] #page-header.full_page::after { background: linear-gradient(180deg, rgba(15, 20, 27, .04), rgba(15, 20, 27, .24)); }
+[data-theme="dark"] #page-header.full_page::before {
+  background-image: radial-gradient(ellipse at 25% 34%, rgba(52, 100, 132, .24), transparent 42%), radial-gradient(ellipse at 78% 70%, rgba(111, 70, 109, .18), transparent 38%), linear-gradient(145deg, #171f2a, #20212b);
+  opacity: .68;
+}
+[data-theme="dark"] #page-header.full_page::after { background: linear-gradient(180deg, rgba(20, 26, 34, .78), rgba(20, 26, 34, .42) 40%, rgba(20, 26, 34, .12) 72%, rgba(20, 26, 34, 0)); }
 [data-theme="dark"] #page-header.full_page #site-title,
 [data-theme="dark"] .feed-heading h2,
 [data-theme="dark"] #recent-posts .article-title { color: #e6edf4; }
@@ -210,6 +225,8 @@
 [data-theme="dark"] .feed-heading > a { color: #90aebe; }
 [data-theme="dark"] .hero-links a { border-color: rgba(208, 225, 238, .14); background: rgba(20, 28, 37, .45); color: #d0e0eb !important; }
 [data-theme="dark"] .hero-links a:hover { background: rgba(43, 57, 70, .8); }
+[data-theme="dark"] #page-header.full_page #site_social_icons a { color: #c8d9e6; }
+[data-theme="dark"] #page-header.full_page #site_social_icons a:hover { color: #7fc4dd; }
 [data-theme="dark"] #page-header.full_page #nav { border-color: rgba(233, 240, 247, .1); background: rgba(26, 34, 44, .72); }
 [data-theme="dark"] #page-header.full_page #nav a,
 [data-theme="dark"] #page-header.full_page #nav .site-name,
@@ -218,6 +235,18 @@
 [data-theme="dark"] #recent-posts .recent-post-info .content { color: #acb9c5; }
 @keyframes hero-arrive { from { opacity: 0; translate: 0 18px; } to { opacity: 1; translate: 0 0; } }
 @keyframes scroll-nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+@keyframes hero-drift { from { translate: 0 0; scale: 1; } to { translate: -1.5% -1%; scale: 1.04; } }
+@keyframes hero-scroll-fade { to { opacity: .12; } }
+@supports (animation-timeline: scroll()) {
+  #page-header.full_page::before {
+    animation: hero-drift 56s ease-in-out infinite alternate, hero-scroll-fade linear both;
+    animation-timeline: auto, scroll(root);
+    animation-range: normal, 0vh 100vh;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #page-header.full_page::before { animation: none; }
+}
 @media (max-width: 768px) {
   #page-header.full_page #nav { width: calc(100% - 24px); margin-top: 8px; border-radius: 20px; }
   #page-header.full_page #site-info { top: 47%; }
