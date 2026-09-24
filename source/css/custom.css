@@ -267,3 +267,67 @@
   .feed-heading > a { font-size: .76rem; }
 }
 
+/* Click pulse: a quiet reticle that locks on where you press. */
+.click-pulse {
+  --click-accent: #167e9b;
+  position: fixed;
+  z-index: 1000;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.click-pulse::before,
+.click-pulse::after {
+  position: absolute;
+  content: '';
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+}
+.click-pulse::before {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--click-accent);
+  border-radius: 50%;
+  opacity: 0;
+  animation: click-ring 560ms cubic-bezier(.16, .84, .34, 1) forwards;
+}
+.click-pulse::after {
+  width: 3px;
+  height: 3px;
+  background: var(--click-accent);
+  opacity: 0;
+  animation: click-kernel 320ms cubic-bezier(.16, .84, .34, 1) forwards;
+}
+.click-pulse i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 10px;
+  background: var(--click-accent);
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(var(--tick, 0deg)) translateY(-11px);
+  animation: click-tick 460ms cubic-bezier(.16, .84, .34, 1) forwards;
+}
+.click-pulse i:nth-child(1) { --tick: 0deg; }
+.click-pulse i:nth-child(2) { --tick: 90deg; }
+.click-pulse i:nth-child(3) { --tick: 180deg; }
+.click-pulse i:nth-child(4) { --tick: 270deg; }
+[data-theme="dark"] .click-pulse { --click-accent: #7fc4dd; filter: drop-shadow(0 0 5px rgba(127, 196, 221, .38)); }
+@keyframes click-ring {
+  from { transform: translate(-50%, -50%) scale(.35); opacity: .9; }
+  to { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+}
+@keyframes click-kernel {
+  from { transform: translate(-50%, -50%) scale(1); opacity: .9; }
+  to { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+}
+@keyframes click-tick {
+  from { transform: translate(-50%, -50%) rotate(var(--tick)) translateY(-11px); opacity: .85; }
+  to { transform: translate(-50%, -50%) rotate(var(--tick)) translateY(-28px); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .click-pulse { display: none !important; }
+}
+

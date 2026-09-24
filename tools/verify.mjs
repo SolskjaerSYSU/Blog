@@ -26,11 +26,12 @@ const home = await readFile('dist/index.html', 'utf8');
 for (const marker of [
   'id="canvas_nest"', 'color="0,0,255"', 'opacity="0.7"', 'count="99"', 'mobile="false"',
   'id="ribbon"', 'size="150"', 'alpha="0.6"', 'data-click="false"',
-  'id="fluttering_ribbon"', 'class="fireworks"',
+  'id="fluttering_ribbon"', '/js/click-pulse.js',
   'pluginsSrc/butterfly-extsrc/dist/activate-power-mode.min.js',
-  'POWERMODE.shake = true',
+  'POWERMODE.colorful = false', 'POWERMODE.shake = false',
 ]) assert(home.includes(marker), `Homepage missing theme effect marker: ${marker}`);
 assert(!home.includes('/js/effects.js'), 'Homepage must not load the retired custom canvas script');
+assert(!home.includes('fireworks.min.js'), 'Fireworks should be replaced by the click reticle');
 const media = JSON.parse(await readFile('source/_data/media.json', 'utf8'));
 for (const kind of ['painting','photography']) {
   const expected = media.filter(p => kind === 'painting' ? /^draw\d+$/.test(p.id) : /^(\d+|DSC_1724)$/.test(p.id));

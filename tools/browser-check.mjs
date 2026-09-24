@@ -41,11 +41,20 @@ try {
     .map(canvas => canvas.toDataURL()));
   const effectsBefore = await canvasFrames();
   assert.equal(effectsBefore.length, 3, 'Theme canvas_nest/ribbon/fluttering layers should be active');
-  assert.equal(await page.locator('canvas.fireworks').count(), 1, 'Theme fireworks canvas should exist');
-  assert(await page.evaluate(() => document.querySelectorAll('script[src*="butterfly-extsrc"]').length >= 5), 'Effect scripts should be served locally');
+  assert.equal(await page.locator('canvas.fireworks').count(), 0, 'Fireworks should be replaced by the click reticle');
+  assert(await page.evaluate(() => document.querySelectorAll('script[src*="butterfly-extsrc"]').length >= 4), 'Effect scripts should be served locally');
   await page.waitForTimeout(900);
   const effectsAfter = await canvasFrames();
   assert(effectsBefore.some((frame, index) => frame !== effectsAfter[index]), 'Theme background canvases should animate over time');
+  await page.mouse.click(300, 700);
+  assert.equal(await page.locator('.click-pulse').count(), 1, 'Clicking should spawn a reticle pulse');
+  await page.waitForTimeout(800);
+  assert.equal(await page.locator('.click-pulse').count(), 0, 'The click reticle should clean itself up');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.mouse.click(500, 700);
+  await page.waitForTimeout(150);
+  assert.equal(await page.locator('.click-pulse').count(), 0, 'Reduced motion should suppress the click reticle');
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
   if (process.env.SCREENSHOT_DIR) {
     await mkdir(process.env.SCREENSHOT_DIR, { recursive: true });
     await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/hexo-home-hero.png` });
@@ -117,7 +126,7 @@ try {
   await mobilePage.goto(base, { waitUntil: 'domcontentloaded' });
   await mobilePage.waitForTimeout(900);
   const mobileCanvases = await mobilePage.evaluate(() => [...document.querySelectorAll('canvas')].map(canvas => canvas.className || 'plain'));
-  assert.deepEqual(mobileCanvases, ['fireworks'], 'Canvas effects should stay off on mobile user agents');
+  assert.deepEqual(mobileCanvases, [], 'Canvas effects should stay off on mobile user agents');
   assert.equal(await mobilePage.locator('.hero-links a').count(), 3, 'Mobile homepage should keep three content shortcuts');
   await mobilePage.close();
   await page.setViewportSize({ width: 390, height: 844 });

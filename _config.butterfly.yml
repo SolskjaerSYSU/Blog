@@ -42,13 +42,15 @@ canvas_fluttering_ribbon:
   enable: true
   mobile: false
 fireworks:
-  enable: true
+  # Replaced by the in-house click reticle (source/js/click-pulse.js).
+  enable: false
   zIndex: 9999
   mobile: false
 activate_power_mode:
   enable: true
-  colorful: true
-  shake: true
+  # Quiet mode: monochrome particles that match the text color, no shake.
+  colorful: false
+  shake: false
   mobile: false
 footer_img: false
 cover:
@@ -161,4 +163,5 @@ inject:
     - <link rel="stylesheet" href="/Blog/css/custom.css">
   bottom:
     - <script src="/Blog/js/hero.js" defer></script>
+    - <script src="/Blog/js/click-pulse.js" defer></script>
     - <script src="/Blog/js/gallery.js" defer></script>
